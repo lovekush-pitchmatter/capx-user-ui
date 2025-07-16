@@ -1,0 +1,78 @@
+.p2p-transfer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.transfer-step {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.transfer-step h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.verify-button,
+.send-otp-button,
+.next-button,
+.previous-button,
+.done-button {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.verify-button:hover,
+.send-otp-button:hover,
+.next-button:hover,
+.previous-button:hover,
+.done-button:hover {
+  background: linear-gradient(90deg, #2575fc, #6a11cb);
+}
+
+.verify-button {
+  margin-left: 10px;
+}
+
+.send-otp-button {
+  margin-left: 10px;
+}
+
+.done-button {
+  margin-top: 20px;
+}

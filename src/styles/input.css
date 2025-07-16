@@ -1,0 +1,24 @@
+/* src/styles/input.css */
+.input-field {
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  height: 40px; /* Assuming a common height for input fields */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10.6048px;
+  line-height: 12px;
+  text-align: left; /* Default text alignment */
+  color: #1a202c; /* Default text color */
+}
+.input-field::placeholder {
+  color: #A0AEBF;
+  text-align: left;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #7A44FF;
+  box-shadow: 0 0 0 2px rgba(122, 68, 255, 0.2);
+} 
