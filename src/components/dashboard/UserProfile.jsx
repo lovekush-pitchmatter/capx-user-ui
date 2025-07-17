@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePicture } from "../../store/slices/profileSlice";
 import AssetAllocation from "./AssetAllocation";
 import defaultImg from "../../assets/images/user_default.png";
+import ActionButtons from "./ActionButtons";
 
 const UserProfile = ({ user, dashboard }) => {
   const dispatch = useDispatch();
@@ -46,15 +47,16 @@ const UserProfile = ({ user, dashboard }) => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  };
-
+  }; 
   return (
-    <div className="p-4 text-center border-[2px] border-violet-500 bg-gray-50 dark:bg-zinc-800 rounded-xl">
-      <div className="relative w-28 h-28 mx-auto">
+    <div className="flex max-sm:flex-col bg-white items-center justify-between  gap-2     dark:bg-zinc-800 py-4 px-4 text-center  rounded-xl">
+
+    <div className="flex gap-2  items-center justify-start">
+      <div className="relative flex items-center justify-center w-20 h-20 ">
         <img
           src={user?.profile_image || defaultImg}
           alt={user?.email || "User"}
-          className="w-28 h-28 rounded-full border-[2px] border-violet-500"
+          className="w-16 h-16 rounded-full border-[2px] border-[#DA68FFBF]"
         />
         <input
           type="file"
@@ -63,7 +65,7 @@ const UserProfile = ({ user, dashboard }) => {
           className="hidden"
           accept="image/png,image/jpeg,image/jpg"
         />
-        <div
+        {/* <div
           className="absolute top-0 right-1 cursor-pointer bg-violet-500 p-1 rounded-full text-white"
           onClick={handleEditClick}
         >
@@ -75,12 +77,16 @@ const UserProfile = ({ user, dashboard }) => {
           ) : (
             <MdEdit size={20} />
           )}
-        </div>
+        </div> */}
       </div>
       {(error || fileError) && (
         <p className="text-red-500 text-sm mt-2">{error || fileError}</p>
       )}
-      <p className="mt-2 font-bold text-lg dark:text-white capitalize">Welcome {user?.username || user?.fullname}</p>
+      <div className="flex flex-col items-start">
+
+      <p className=" font-semibold text-lg dark:text-white capitalize">{user?.username || user?.fullname}</p>
+      <p className="text-gray-600 dark:text-white capitalize">{ user?.email}</p>
+      </div>
       <div className="mt-2 text-sm dark:text-white">
         {user?.is_token_purchased ? (
           <div className="space-y-2">
@@ -101,6 +107,8 @@ const UserProfile = ({ user, dashboard }) => {
         {/* <div>Total Assets: <span className="font-semibold">{dashboard?.totalAssets ?? 0}</span></div>
         <div>Direct Referrals: <span className="font-semibold">{dashboard?.totalDirectReferral ?? 0}</span></div> */}
       </div>
+    </div>
+  <ActionButtons />
     </div>
   );
 };

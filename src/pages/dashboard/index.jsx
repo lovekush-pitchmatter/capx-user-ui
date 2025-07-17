@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboard } from "../../store/slices/generalSlice";
-import { getUser } from "../../store/slices/authSlice";
-import ActionButtons from "../../components/dashboard/ActionButtons";
+import { getUser } from "../../store/slices/authSlice"; 
 import Box from "../../components/dashboard/Box";
 import StatusTable from "../../components/dashboard/StatusTable";
 import SummaryGraph from "../../components/dashboard/SummaryGraph";
@@ -41,19 +40,22 @@ const Dashboard = () => {
           </Link>
         </div> 
       )}
-      <div className="flex flex-col-reverse md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div className="  md:col-span-2 lg:col-span-3 space-y-4 bg-gray-100 dark:bg-zinc-200 rounded-xl p-2 md:p-4">
+      <div className="flex flex-col-reverse w-full   gap-4">
+        <div className="w-full space-y-4 bg-gray-100 dark:bg-zinc-200 rounded-xl p-2 md:p-4">
            <div className=" grid grid-cols-1 xl:grid-cols-[100%] justify-between gap-4">
-            <Box user={user} dashboard={dashboard} />
+            <UserProfile user={user} dashboard={dashboard} />
+        
           </div>
+          <div className="max-md:flex-col flex gap-4">
+          <AssetAllocation dashboard={dashboard} user={user} />
+            <Box user={user} dashboard={dashboard} />
+          
+          </div >
+            
           <SummaryGraph monthlyData={dashboard.monthlyData} />
           <StatusTable transactions={dashboard.transactions} />
         </div>
-        <div className="md:space-y-4 md:sticky max-md:flex flex-col w-full gap-2 top-4 self-start">
-          <UserProfile user={user} dashboard={dashboard} />
-          <ActionButtons />
-          <AssetAllocation dashboard={dashboard} user={user} />
-        </div>
+        
       </div>
     </Layout>
   );

@@ -4,65 +4,77 @@ import { HiOutlineCircleStack } from "react-icons/hi2";
 import { PiCoins, PiCurrencyDollarBold } from "react-icons/pi";
 
 const Box = ({ user, dashboard }) => {
+  console.log(user);
   const statsData = [
     {
-      title: "Wallet Amount",
+      title: "Total Earings",
       value: user.wallet_amount,
-      unit: "USD",
+      unit: "$",
       icon: <PiCoins size={24} />,
-      color: "bg-pink-100 dark:bg-pink-100/30",
+      bg: "text-purple-800 bg-purple-200",
     },
     {
-      title: "Total Capx Token",
+      title: "Capx Balance",
       value: user.user_vested_tokens,
-      unit: "CAPX",
+      unit: "",
       icon: <PiCurrencyDollarBold size={24} />,
-      color: "bg-yellow-100 dark:bg-yellow-100/30",
+      bg: "text-blue-800 bg-blue-200",
     },
     {
-      title: "Total Asset Value",
+      title: "AngelSEED Balance",
       value: dashboard.totalAssets,
-      unit: "USD",
+      unit: "$",
       icon: <HiOutlineCircleStack size={24} />,
-      color: "bg-purple-100 dark:bg-purple-100/30",
+      bg: "text-yellow-800 bg-yellow-200",
     },
     {
-      title: "Total Direct Referrals",
+      title: "No. of Referrals",
       value: 0,
       unit: "",
       icon: <GoPeople size={24} />,
-      color: "bg-red-100 dark:bg-red-100/30",
+      bg: "text-green-800 bg-green-200",
     },
   ];
 
   //dashboard.totalDirectReferral
 
   return (
-    
-      <div className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center gap-4 w-full ">
+    <div className="bg-white shadow-lg dark:bg-zinc-900 p-4 rounded-xl w-full">
+      <div className="relative mb-4 overflow-hidden bg-white dark:bg-zinc-900 dark:text-white  w-full border border-[#DA68FFBF]  py-4  px-4 rounded-xl flex flex-col md:items-start items-center max-md:justify-center shadow-md shadow-[#B500EF47]  gap-2">
+  
+
+        <div
+          className={`flex max-sm:text-xl items-center gap-2 p-2 text-purple-800 bg-purple-200 rounded-full z-20  `}
+        >
+        <PiCoins size={28} />
+        </div>
+        <p className="text-3xl leading-none flex gap-2 items-center flex-wrap   font-semibold  z-20">
+               $ {user.user_total_tokens_unlocked}
+        
+        </p>
+        <p className="text-xs font-medium text-zinc-500">Estimated Balance</p>
+      </div>
+
+      <div className="grid grid-cols-2 items-center justify-center gap-4 w-full ">
         {statsData.map((item, index) => (
           <div
             key={index}
-            className="relative overflow-hidden bg-white dark:bg-zinc-900 dark:text-white  w-full h-[150px] p-4 rounded-xl flex flex-col md:items-start items-center max-md:justify-center shadow-lg  gap-2"
+            className="relative overflow-hidden bg-white dark:bg-zinc-900 dark:text-white  w-full border border-[#DA68FFBF]  py-4  px-4 rounded-xl flex flex-col md:items-start items-center max-md:justify-center shadow-md shadow-[#B500EF47]  gap-2"
           >
-            <div className="flex max-sm:text-xl items-center gap-2 z-20">
+            <div
+              className={`flex max-sm:text-xl items-center gap-2 p-1 rounded-full z-20 ${item.bg}`}
+            >
               {item.icon}
-              <h4 className="font-medium   z-20">{item.title}</h4>
             </div>
-            <p className="text-2xl max-sm:text-3xl leading-none flex gap-2 items-center flex-wrap mt-2 md:mt-4 font-semibold  z-20">
-              {item.value} 
-              {item.unit && <span className="text-base">{item.unit}</span>}
+            <p className="text-2xl leading-none flex gap-2 items-center flex-wrap   font-semibold  z-20">
+              {item.unit && <span>{item.unit}</span>}
+              {item.value}
             </p>
-            <div
-              className={`absolute -top-16 -left-8 h-28 w-28 -z-0 rounded-full ${item.color}`}
-            ></div>
-            <div
-              className={`absolute -bottom-28 -right-10 h-40 w-40  -z-0 rounded-full ${item.color}`}
-            ></div>
+            <p className="text-xs font-medium text-zinc-500">{item.title}</p>
           </div>
         ))}
       </div>
-     
+    </div>
   );
 };
 
