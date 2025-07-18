@@ -10,10 +10,9 @@ function getAssetData(dashboard, user) {
   return {
     data: [capx, wallet_amount, usd],
     labels: ["CAPX", "Wallet Amount", "USD"],
-    colors: ["#A58CFF", "#FFD94D", "#0dbab8"]
+    colors: ["#A58CFF", "#FFD94D", "#0dbab8"],
   };
 }
-
 
 const options = {
   plugins: {
@@ -29,27 +28,10 @@ export default function AssetAllocation({ dashboard, user }) {
   const { data, labels, colors } = getAssetData(dashboard, user);
   const allZero = data.every((v) => v === 0);
 
-  let chartData, tokenData;
-  if (allZero) {
-    chartData = {
-      labels: ["Wallet Amount"],
-      datasets: [
-        {
-          data: [1],
-          backgroundColor: ["#A58cff"],
-          borderWidth: 0,
-          cutout: "60%",
-        },
-      ],
-    };
-    tokenData = [
-      {
-        label: "Wallet Amount",
-        color: "#A58cff",
-        percentage: "0%",
-      },
-    ];
-  } else {
+  let chartData = null;
+  let tokenData = [];
+
+  if (!allZero) {
     const total = data.reduce((sum, v) => sum + v, 0) || 1;
     chartData = {
       labels,
@@ -58,36 +40,48 @@ export default function AssetAllocation({ dashboard, user }) {
           data,
           backgroundColor: colors,
           borderWidth: 0,
-          cutout: "60%",
+          cutout: "75%",
+          borderRadius: 10,
+          spacing: 4,
         },
       ],
     };
+
     tokenData = labels.map((label, i) => ({
       label,
       color: colors[i],
       percentage: `${((data[i] / total) * 100).toFixed(0)}%`,
     }));
   }
+
   return (
-    <div className="bg-white border-[2px] border-violet-500 dark:bg-zinc-900 p-4 rounded-xl shadow-lg  w-full ">
+    <div className="bg-white  dark:bg-zinc-900 p-4 rounded-xl shadow-lg w-full">
       <h3 className="text-center dark:text-white font-semibold text-lg mb-4">
         Asset Allocation
       </h3>
-      <div className="h-36 flex justify-center items-center">
-        <Doughnut data={chartData} options={options} />
-      </div>
-     <div className="mt-2 space-y-2 text-sm dark:text-white">
-      {tokenData.map((item, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <span
-            className="h-3 w-3 rounded-full"
-            style={{ backgroundColor: item.color }}
-          ></span>
-          <span>{item.label}</span>
-          <span className="ml-auto font-semibold">{item.percentage}</span>
+
+      {allZero ? (
+        <div className="h-36 flex items-center justify-center text-gray-400 dark:text-gray-300">
+          No data available
         </div>
-      ))}
-    </div>
+      ) : (
+        <>
+          <div className="h-36 flex justify-center items-center">
+            <Doughnut data={chartData} options={options} />
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-4 flex-wrap text-sm dark:text-white">
+            {tokenData.map((item, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></span>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

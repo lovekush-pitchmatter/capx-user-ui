@@ -25,7 +25,7 @@ const SummaryGraph = ({ monthlyData }) => {
   });
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white dark:bg-zinc-900 dark:text-white p-4 rounded-xl shadow-lg">
+    <div className="w-full mx-auto bg-white dark:bg-zinc-900 dark:text-white p-4 rounded-xl shadow-lg">
       <div className="flex items-center justify-between mb-4">
         <h2 className="md:text-2xl text-lg text-start font-semibold">
           Summary Graph
