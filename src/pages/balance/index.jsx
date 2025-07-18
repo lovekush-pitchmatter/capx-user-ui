@@ -6,7 +6,7 @@ import { balanceDetailsThunk } from "../../store/slices/transactionSlice";
 import { Link } from "react-router-dom";
 
 const statuses = ["completed", "pending", "failed"];
- 
+
 const getStatusClass = (status) => {
   switch (status) {
     case "completed":
@@ -32,11 +32,12 @@ const formatDate = (date) => {
 
 const WalletBalance = () => {
   const dispatch = useDispatch();
-  const { balanceDetails, loading, error } = useSelector((state) => ({
-    balanceDetails: state.transaction.balanceDetails || {},
-    loading: state.transaction.loading || false,
-    error: state.transaction.error || null
-  }));
+  const balanceDetails = useSelector(
+    (state) => state.transaction.balanceDetails || {}
+  );
+  const loading = useSelector((state) => state.transaction.loading || false);
+  const error = useSelector((state) => state.transaction.error || null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -57,7 +58,7 @@ const WalletBalance = () => {
   const displayData = walletDetails.length > 0 ? walletDetails : cryptoData;
 
   const filteredData = displayData.filter((item) => {
-    const coinName = item.coinname || item.coin_type || '';
+    const coinName = item.coinname || item.coin_type || "";
     const matchesSearch = coinName.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter ? item.status === statusFilter : true;
     return matchesSearch && matchesStatus;
@@ -80,7 +81,7 @@ const WalletBalance = () => {
             <span className="text-sm font-medium text-[#000]">Show</span>
             <div className="relative">
               <select
-                className="border rounded px-2 py-1 text-sm appearance-none pr-6"
+                className="border-2 border-gray-400 rounded-xl px-2 py-2 text-sm appearance-none pr-6"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
@@ -115,8 +116,8 @@ const WalletBalance = () => {
           <div className="relative w-56">
             <input
               type="text"
-              className="border rounded px-2 py-1 text-sm w-full pl-8"
-              placeholder="Search by crypto name or symbol"
+              className="border-2 border-gray-400 rounded-xl px-4 py-2 text-sm w-full pr-8"
+              placeholder="Search..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -124,7 +125,7 @@ const WalletBalance = () => {
               }}
             />
             <svg
-              className="absolute left-2 top-1/2 -translate-y-1/2"
+              className="absolute right-2 top-1/2 -translate-y-1/2"
               width="16"
               height="15"
               viewBox="0 0 16 15"
@@ -172,7 +173,7 @@ const WalletBalance = () => {
               ) : error ? (
                 <tr>
                   <td colSpan="7" className="text-center p-4 text-red-500">
-                    Error: {error}
+                    Error: {error?.message || "Something went wrong"}
                   </td>
                 </tr>
               ) : paginatedData.length > 0 ? (
@@ -181,19 +182,41 @@ const WalletBalance = () => {
                     key={index}
                     className="border-t dark:bg-gray-200 dark:border-zinc-800 hover:bg-gray-50 transition-all"
                   >
-                    <td className="p-2 sm:p-4">{item.coinname || item.coin_type || "N/A"}</td>
-                    <td className="p-2 sm:p-4">{Number(item.available_balance || item.amount || 0).toFixed(2)}</td>
-                    <td className="p-2 sm:p-4">{Number(item.vested_balance || 0).toFixed(2)}</td>
-                    <td className="p-2 sm:p-4">{Number(item.vested_balance || 0).toFixed(2)}</td>
-                    <td className="p-2 sm:p-4">{Number(item.available_balance || item.amount || 0).toFixed(2)}</td>
-                    <td className="p-2 sm:p-4">${Number(item.usd_balance || 0).toFixed(2)}</td>
+                    <td className="p-2 sm:p-4">
+                      {item.coinname || item.coin_type || "N/A"}
+                    </td>
+                    <td className="p-2 sm:p-4">
+                      {Number(
+                        item.available_balance || item.amount || 0
+                      ).toFixed(2)}
+                    </td>
+                    <td className="p-2 sm:p-4">
+                      {Number(item.vested_balance || 0).toFixed(2)}
+                    </td>
+                    <td className="p-2 sm:p-4">
+                      {Number(item.vested_balance || 0).toFixed(2)}
+                    </td>
+                    <td className="p-2 sm:p-4">
+                      {Number(
+                        item.available_balance || item.amount || 0
+                      ).toFixed(2)}
+                    </td>
+                    <td className="p-2 sm:p-4">
+                      ${Number(item.usd_balance || 0).toFixed(2)}
+                    </td>
                     <td className="p-2 sm:p-4">
                       <div className="flex gap-2">
-                        <Link to="/deposit-funds" className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm">
+                        <Link
+                          to="/deposit-funds"
+                          className="px-6 py-3 bg-gradient-to-r to-[#B500EF] from-[#37009A] text-white rounded-lg hover:bg-purple-700 font-semibold transition-colors text-sm"
+                        >
                           Deposit
                         </Link>
-                        <Link to="/transfer" className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
-                          Transfer
+                        <Link
+                          to="/transfer"
+                          className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-colors text-sm"
+                        >
+                          Withdraw
                         </Link>
                       </div>
                     </td>
@@ -202,10 +225,9 @@ const WalletBalance = () => {
               ) : (
                 <tr>
                   <td colSpan="7" className="text-center p-4">
-                    {displayData.length === 0 ? 
-                      `No crypto assets found. Total wallet amount: $${walletAmount.toLocaleString()}` : 
-                      "No wallet balance found."
-                    }
+                    {displayData.length === 0
+                      ? `No crypto assets found. Total wallet amount: $${walletAmount.toLocaleString()}`
+                      : "No wallet balance found."}
                   </td>
                 </tr>
               )}

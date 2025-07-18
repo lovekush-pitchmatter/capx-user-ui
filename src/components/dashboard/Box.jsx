@@ -4,7 +4,7 @@ import { HiOutlineCircleStack } from "react-icons/hi2";
 import { PiCoins, PiCurrencyDollarBold } from "react-icons/pi";
 
 const Box = ({ user, dashboard }) => {
-  console.log(user);
+   
   const statsData = [
     {
       title: "Total Earings",
