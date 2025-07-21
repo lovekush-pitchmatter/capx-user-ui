@@ -17,7 +17,11 @@ const BuyTableRow = ({ data, onBuyClick }) => {
       <td className="font-semibold rounded-r-xl py-4 md:py-6 px-4 text-center">
         <button
           onClick={onBuyClick}
-          className="px-6 py-2 font-semibold bg-[#7A44FF] text-white rounded-xl shadow"
+          className="px-6 py-2 font-semibold text-white rounded-xl shadow"
+          style={{ 
+            background: 'linear-gradient(to right, #37009A, #B500EF)',
+            backgroundImage: 'linear-gradient(to right, #37009A, #B500EF) !important'
+          }}
         >
           Buy CAPX
         </button>

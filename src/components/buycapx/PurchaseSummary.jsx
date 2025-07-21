@@ -31,10 +31,23 @@ const PurchaseSummary = ({onBack}) => {
         </div>
 
         <div className="flex max-sm:flex-col justify-center gap-3">
-          <button className="font-semibold text-sm border border-[#7A44FF] text-[#7A44FF] px-4 py-2 rounded-lg">
+          <button 
+            className="font-semibold text-sm text-white px-4 py-2 rounded-lg"
+            style={{ 
+              background: 'linear-gradient(to right, #37009A, #B500EF)',
+              backgroundImage: 'linear-gradient(to right, #37009A, #B500EF) !important'
+            }}
+          >
             View Purchases
           </button>
-          <button onClick={onBack} className="font-semibold text-sm bg-[#7A44FF] text-white px-4 py-2 rounded-lg">
+          <button 
+            onClick={onBack} 
+            className="font-semibold text-sm text-white px-4 py-2 rounded-lg"
+            style={{ 
+              background: 'linear-gradient(to right, #37009A, #B500EF)',
+              backgroundImage: 'linear-gradient(to right, #37009A, #B500EF) !important'
+            }}
+          >
             Buy More CAPX
           </button>
         </div>

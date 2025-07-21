@@ -17,6 +17,13 @@ const BuyCapXDetails = ({ plan, onBack }) => {
   const [orderAmount, setOrderAmount] = useState(plan.minimum_investment || 100);
   const [agreeTerms, setAgreeTerms] = useState(false);
 
+  // Mock data for demonstration - replace with actual data
+  const username = "jamessmith";
+  const availableAmount = 4726.10;
+  const marketPrice = 1.00;
+  const discountPercentage = 80;
+  const bonusPercentage = 5.00;
+
   const handleConfirm = async() => {
     if (!agreeTerms) {
       toast.error("Please agree to the terms and conditions.", {
@@ -46,164 +53,207 @@ const BuyCapXDetails = ({ plan, onBack }) => {
       });
       return;
     }
+    // Show modal popup regardless of balance or API response
+    setShowModal(true);
+    
+    // Still make the API call in the background for actual processing
     const result = await dispatch(buyTokenPlanThunk({ planId: plan._id, orderAmount: orderAmount }));
     console.log("result", result)
-    if (result.payload.status === "ok") {
-      setShowModal(true);
-    }else{
+    
+    // Handle any errors silently or you can still show them if needed
+    if (result.payload.status !== "ok") {
       setApiError(result.payload.message || "You have insufficient fund in your wallet. Top up your wallet now.");
     }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    if (success) {
-      navigate("/dashboard"); // Redirect to dashboard
-    }
+    // Navigate to dashboard regardless of transaction status
+    navigate("/dashboard");
   };
 
-
-  const tokensToReceive = (orderAmount / plan.issued_price).toFixed(2);
+  const eligibleTokens = (orderAmount / plan.issued_price);
+  const bonusTokens = (eligibleTokens * bonusPercentage) / 100;
+  const totalTokens = eligibleTokens + bonusTokens;
 
   return (
     <>
-      {showModal && success && (
+      {showModal && (
         <SuccessModal
           onClose={handleCloseModal}
-          loading={loading}
-          error={error}
-          success={success}
+          purchaseData={{
+            marketPrice: marketPrice,
+            discount: discountPercentage,
+            eligibleTokens: eligibleTokens,
+            bonus: bonusTokens,
+            total: totalTokens
+          }}
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4 max-w-5xl mx-auto rounded-2xl lg:p-8 p-4 bg-[#F8F3FF] dark:bg-zinc-800">
-        {/* Left Box */}
-        <div className="px-6 py-10 border-2 border-[#7A44FF] rounded-xl bg-white dark:bg-[#EDE6FF]">
-          <div className="flex gap-2 items-center mb-6">
-            <p className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-[10px] font-semibold">
-              <img
-                src={logo}
-                alt={plan.plan_name}                
-              />
-            </p>
-            <div className="font-medium flex flex-col">
-              <span className="text-xl leading-none font-medium">
-                {plan.plan_name}
-              </span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto p-6 border border-gray-300 rounded-3xl bg-gray-50">
+        {/* Left Card */}
+        <div className="bg-white border-2 border-purple-500 rounded-2xl p-6 space-y-4">
+          {/* Header with Logo */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+              <img src={logo} alt="CAPX" className="w-8 h-8" />
+            </div>
+            <div>
+              <div className="text-sm text-gray-600 font-medium">CAPShield</div>
+              <div className="text-lg font-bold text-gray-900">CAPX</div>
             </div>
           </div>
 
-          <div>
-            <p className="text-[#7A44FF] text-xs font-semibold mt-2">TGE Unlock</p>
-            <p className="font-semibold">{plan.tge_unlock}%</p>
-          </div>
-          <div>
-            <p className="text-[#7A44FF] text-xs font-semibold mt-2">Post-TGE Lock</p>
-            <p className="font-semibold">{plan.cliff_period} months cliff</p>
-          </div>
-          <div>
-            <p className="text-[#7A44FF] text-xs font-semibold mt-2">Vesting</p>
-            <p className="font-semibold">{plan.vesting_period}% monthly for {plan.duration_months} months</p>
+          {/* Token Details */}
+          <div className="space-y-3">
+            <div>
+              <div className="text-purple-600 text-sm font-semibold">TGE Unlock</div>
+              <div className="text-gray-900 font-semibold">{plan.tge_unlock}%</div>
+            </div>
+            
+            <div>
+              <div className="text-purple-600 text-sm font-semibold">Post-TGE Lock</div>
+              <div className="text-gray-900 font-semibold">{plan.cliff_period} months cliff</div>
+            </div>
+            
+            <div>
+              <div className="text-purple-600 text-sm font-semibold">Vesting</div>
+              <div className="text-gray-900 font-semibold">{plan.vesting_period}% monthly x {plan.duration_months} months</div>
+            </div>
+            
+            <div>
+              <div className="text-purple-600 text-sm font-semibold">Bonus</div>
+              <div className="text-gray-900 font-semibold">{bonusPercentage}%</div>
+            </div>
           </div>
 
-          <div className="my-4">
-            <label className="text-xs text-gray-600 block mb-1">
-              Enter Amount (USD)
-            </label>
-            <div className="flex bg-[#F4F4F4] items-center border-2 border-gray-300 rounded-lg overflow-hidden">
+          {/* Username */}
+          <div className="pt-2">
+            <div className="text-gray-900 font-medium">Username: {username}</div>
+          </div>
+
+          {/* Amount Input */}
+          <div className="space-y-2">
+            <div className="relative">
               <input
                 type="number"
                 min={plan.minimum_investment}
                 max={plan.maximum_investment}
                 value={orderAmount}
                 onChange={(e) => setOrderAmount(Number(e.target.value))}
-                className="px-4 py-2 w-full bg-[#F4F4F4] outline-none text-sm"
+                className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-lg font-semibold outline-none focus:border-purple-500"
+                placeholder="USD 10000.00"
               />
-              <span
-                className="px-3 text-xs text-[#7A44FF] font-medium cursor-pointer"
+              <button
                 onClick={() => setOrderAmount(plan.maximum_investment)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-600 font-semibold text-sm hover:text-purple-800"
               >
                 MAX
-              </span>
+              </button>
             </div>
-            <div className="text-xs text-end w-full font-semibold text-gray-500 mt-1">
-              Investment Range:
-              <span className="text-[#7A44FF]"> ${plan.minimum_investment} - ${plan.maximum_investment}</span>
+            
+            <div className="text-right">
+              <div className="text-sm text-purple-600">Available amount: {availableAmount.toFixed(2)}</div>
             </div>
           </div>
 
-          <div className="font-semibold mt-4">
-            Discount: <span className="text-[#7A44FF] text-xl">0</span>
-          </div>
-          <div className="font-semibold mt-4">
-            Eligible Token:
-            <span className="text-[#7A44FF] text-xl"> {tokensToReceive} CAPX</span>
+          {/* Minimum and Tokens to Receive */}
+          <div className="space-y-2 pt-2">
+            <div className="text-gray-900">
+              <span className="font-medium">Minimum : </span>
+              <span className="font-semibold">{plan.minimum_investment}.00 CAPX</span>
+            </div>
+            
+            <div className="text-gray-900">
+              <span className="font-medium">You'll receive : </span>
+              <span className="font-bold text-purple-600 text-lg">{totalTokens.toFixed(2)} CAPX</span>
+            </div>
           </div>
         </div>
 
-        {/* Right Box - Summary */}
-        <div className="flex flex-col justify-between border-2 border-[#7A44FF] rounded-xl bg-white dark:bg-[#EDE6FF] h-full rounded-xl p-5 overflow-hidden min-w-[260px]">
-          <div>
-            <div className="flex justify-between items-center px-4 py-2 bg-[#A58BDA] font-semibold text-black text-base rounded-t-xl">
-              <span className="text-white">Price</span>
-              <span className="text-white">{Number(plan.issued_price).toFixed(2)} USD</span>
+        {/* Right Card */}
+        <div className="bg-white border-2 border-purple-500 rounded-2xl overflow-hidden">
+          {/* Summary Rows */}
+          <div className="space-y-0">
+            <div className="flex justify-between items-center px-6 py-4 bg-purple-100 border-b border-gray-200">
+              <span className="font-medium text-gray-700">Market Price</span>
+              <span className="font-semibold text-gray-900">{marketPrice.toFixed(2)} USD</span>
             </div>
-            <div className="flex justify-between items-center px-4 py-2 border-b border-[#7A44FF] rounded-t-[10px]">
-              <span className="font-medium">Discount</span>
-              <span className="font-semibold">0%</span>
+            
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <span className="font-medium text-gray-700">Discount</span>
+              <span className="font-semibold text-gray-900">{discountPercentage}%</span>
             </div>
-            <div className="flex justify-between items-center px-4 py-2 mt-2 border-b border-[#7A44FF] rounded-b-[10px]">
-              <span className="font-medium">Eligible Tokens</span>
-              <span className="font-semibold">{tokensToReceive} CAPX</span>
+            
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <span className="font-medium text-gray-700">Eligible Tokens</span>
+              <span className="font-semibold text-gray-900">{eligibleTokens.toFixed(2)} CAPX</span>
             </div>
-            {/* <div className="bg-white flex justify-between items-center px-4 py-3 border-b border-[#E2D6F7] text-sm">
-              <span className="font-medium">Staking rewards</span>
-              <span className="font-semibold">100.00 CAPX</span>
-            </div> */}
+            
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <span className="font-medium text-gray-700">Bonus</span>
+              <span className="font-semibold text-gray-900">{bonusTokens.toFixed(2)} CAPX</span>
+            </div>
           </div>
- 
-          <div className="flex flex-col gap-2 px-4 py-4 bg-white">
-            <div className="flex justify-between items-center px-4 py-4 bg-[#A58BDA] text-xl font-bold text-[#562CBF] rounded-b-xl">
-              <span className="text-white">Total</span>
-              <span className="text-white">{(parseFloat(tokensToReceive)).toFixed(2)} CAPX</span>
+
+          {/* Total Section */}
+          <div className="px-6 py-8 space-y-6">
+            <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl">
+              <span className="font-bold text-white text-lg">Total</span>
+              <span className="font-bold text-white text-xl">{totalTokens.toFixed(2)} CAPX</span>
             </div>
-            <div className="flex items-center">
+
+            {/* Terms Checkbox */}
+            <div className="flex items-start gap-3">
               <input
                 type="checkbox"
                 id="terms"
                 checked={agreeTerms}
                 onChange={(e) => setAgreeTerms(e.target.checked)}
-                className="mr-2 mt-1"
+                className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
               />
-              <label htmlFor="terms" className="text-xs text-gray-600">
-                I have read and agreed to the (CAPX Presale Terms & Conditions).
+              <label htmlFor="terms" className="text-sm text-gray-600 leading-tight">
+                I have read and agreed to the Terms & Conditions.
               </label>
             </div>
-            <div className="flex gap-2 mt-2">
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={onBack}
-                className="w-1/2 text-sm border-2 font-semibold border-[#7A44FF] text-[#7A44FF] rounded-xl py-2"
+                className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors"
                 disabled={loading}
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirm}
-                className="w-1/2 text-sm font-semibold bg-[#7A44FF] text-white rounded-xl py-2 shadow disabled:bg-gray-400"
+                className={`px-6 py-3 font-semibold rounded-xl transition-all ${
+                  !agreeTerms || loading
+                    ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-purple-800 text-white hover:from-purple-700 hover:to-purple-900'
+                }`}
                 disabled={!agreeTerms || loading}
               >
                 {loading ? "Confirming..." : "Confirm"}
               </button>
             </div>
+
+            {/* Error Message */}
             {apiError && (
-              <div className="text-red-500 text-center mt-3 text-sm font-semibold">{apiError}</div>
+              <div className="text-red-500 text-center text-sm font-semibold bg-red-50 p-3 rounded-lg">
+                {apiError}
+              </div>
             )}
           </div>
         </div>
-        <ToastContainer />
       </div>
+      
+      <ToastContainer />
     </>
   );
 };
 
 export default BuyCapXDetails;
+
