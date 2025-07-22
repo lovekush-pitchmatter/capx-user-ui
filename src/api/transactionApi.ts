@@ -1,6 +1,6 @@
 import { axiosInstance } from "../config";
 import { nowPaymentsDepositThunk } from "../store/slices/transactionSlice";
-
+ 
 const transactionApi = {
   getTokenPurchasePlan: async () => {
     const token = localStorage.getItem("token");

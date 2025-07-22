@@ -6,7 +6,7 @@ const LoaderPage = () => {
     <div className="flex items-center justify-center h-screen w-screen bg-white">
       <div className="flex flex-col items-center space-y-4">
         <img src={loaderGif} alt="Loading..." className="w-30 h-25" />
-        <p className="text-gray-600 text-md font-medium">Loading CapShield Token...</p>
+        <p className="text-gray-600 text-md font-medium">Loading CAPShield...</p>
       </div>
     </div>
   );

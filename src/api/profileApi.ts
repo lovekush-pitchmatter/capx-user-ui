@@ -32,6 +32,16 @@ const profileApi = {
   updateTwoFA: async (encryptedData: any) => {
     return await axiosInstance.post("user/update/2fa", { encryptedData }).then(res => res.data);
   },
+  
+  saveProfileLinks: async (profileLink: any[]) => {
+    const response = await axiosInstance.post("/profile/links", { profileLink });
+    return response.data;
+  },
+  
+  getProfileLinks: async () => {
+    const response = await axiosInstance.get("/profile/links");
+    return response.data;
+  },
 };
 
 export default profileApi;

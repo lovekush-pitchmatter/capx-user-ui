@@ -142,9 +142,23 @@ const authApi = {
     return response;
   },
 
-  googleSignIn: async (credential: string, refcode: string) => {
-    const response = await axiosInstance.post("/google/signin", { credential, refcode });
-    return response.data;
+  googleSignIn: async (credential: string, refcode: string, country: string) => {
+    console.log("AuthAPI: Google signin called with:", { 
+      credential: credential ? "present" : "missing", 
+      credentialLength: credential?.length,
+      refcode, 
+      country 
+    });
+    
+    try {
+      const response = await axiosInstance.post("/google/signin", { credential, refcode, country });
+      console.log("AuthAPI: Google signin response:", response);
+      return response.data;
+    } catch (error) {
+      console.error("AuthAPI: Google signin error:", error);
+      console.error("AuthAPI: Error response:", error.response);
+      throw error;
+    }
   },
   appleSignIn: async (id_token: string) => {
     const response = await axiosInstance.post("/apple/signin", { id_token });

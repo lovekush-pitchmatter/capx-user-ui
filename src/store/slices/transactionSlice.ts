@@ -5,7 +5,7 @@ interface ReportState {
   loading: boolean;
   error: string | null;
   data: any;
-}
+} 
 
 interface TransactionState {
   loading: boolean;
@@ -121,7 +121,7 @@ export const completeOrder = createAsyncThunk(
       return rejectWithValue(error.response.data);
     }
   }
-);
+); 
 
 export const failedOrder = createAsyncThunk(
   'transaction/failedOrder',

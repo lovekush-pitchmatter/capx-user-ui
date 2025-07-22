@@ -26,6 +26,14 @@ import SuccessDeposit from "./pages/deposit-funds/success";
 import Settings from "./pages/settings";
 import Support from "./pages/support";
 import NotFoundPage from "./pages/not-found";
+import TransactionReport from "./pages/transaction-report";
+import EarningsReport from "./pages/earnings-report";
+import StakeEarningReport from "./pages/stake-earning-report";
+import TransferReport from "./pages/transfer-report";
+import WithdrawalReport from "./pages/withdrawal-report";
+import ConversionsReport from "./pages/conversions-report";
+import DepositHistoryReport from "./pages/deposit-history-report";
+import StakingReport from "./pages/staking-report";
 
 import PaymentSuccess from "./pages/status/success";
 import PaymentFailed from "./pages/status/failed";
@@ -56,13 +64,21 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/success" element={<PaymentSuccess />} />
               <Route path="/dashboard/failed" element={<PaymentFailed />} />
-              <Route path="/buy-token" element={<BuyCapX />} />
+              <Route path="/buy-crypto" element={<BuyCapX />} />
               <Route path="/deposit-history" element={<DepositHistory />} />
               <Route path="/token-purchase-history" element={<TokenHistory />} />
               <Route path="/withdraw" element={<Withdraw />} />
               <Route path="/transfer" element={<Transfer />} />
               <Route path="/conversion" element={<Conversion />} />
               <Route path="/referral-report" element={<ReferralReport />} />
+              <Route path="/transaction-report" element={<TransactionReport />} />
+              <Route path="/earnings-report" element={<EarningsReport />} />
+              <Route path="/stake-earning-report" element={<StakeEarningReport />} />
+              <Route path="/transfer-report" element={<TransferReport />} />
+              <Route path="/withdrawal-report" element={<WithdrawalReport />} />
+              <Route path="/conversions-report" element={<ConversionsReport />} />
+              <Route path="/deposit-history-report" element={<DepositHistoryReport />} />
+              <Route path="/staking-report" element={<StakingReport />} />
               <Route path="/deposit-funds" element={<DepositFunds />} />
               <Route path="/balance" element={<Balance />} />
               <Route path="/deposit-success" element={<SuccessDeposit />} />

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   walletConnectDepositThunk,
+  coinsPaymentDepositThunk,
   dispatchManualThunk,
   nowPaymentsDepositThunk,
   completeOrder,
@@ -41,12 +42,13 @@ const IS_TESTNET = true;
 
 const paymentConfigs = {
   nowpayment: {
-    coins: ["USDT (ERC-20)", "USDT (BEP-20)", "ETH"],
+    coins: ["USDT (BEP-20)", "USDT (TRC-20)", "USDT (ERC-20)", "ETH"],
     chains: {
       ETH: "ETH",
       BNB: "BNB",
       "USDT (ERC-20)": "ETH",
       "USDT (BEP-20)": "Binance Smart Chain (BSC)",
+      "USDT (TRC-20)": "TRON",
     },
   },
 };
@@ -115,7 +117,7 @@ const DepositFunds = () => {
       return setFormErrors({ capxError: "Enter a valid amount (minimum 100, no decimals)." });
     }
     if (!depositCoin) return setFormErrors({ capxError: "Select a valid deposit coin." });
-    var finalCoin = "";
+    var finalCoin = "USDT.BSC";
     if (depositCoin === "ETH") {
       finalCoin = "ETH";
     } else if (depositCoin === "USDT (TRC-20)") {
@@ -130,7 +132,7 @@ const DepositFunds = () => {
       const data = {
         orderAmount: amount,
         paymentCurrency: finalCoin,
-        paymentChain,
+        paymentChain: paymentChain ? paymentChain : "Binance Smart Chain (BSC)",
       };
 
       const { encryptedData, id } = encryptData(data);
@@ -145,6 +147,15 @@ const DepositFunds = () => {
 
       if (depositMethod === "nowpayment") {
         const result = await dispatch(nowPaymentsDepositThunk(finalData)).unwrap();
+        if (result.checkout_url) {
+          setButtonLoading(false);
+          window.location.href = result.checkout_url;
+        } else {
+          setButtonLoading(false);
+          setFormErrors({ capxError: "Failed to get payment URL. Please try again." });
+        }
+      } else if (depositMethod === "coinspayment") {
+        const result = await dispatch(coinsPaymentDepositThunk(finalData)).unwrap();
         if (result.checkout_url) {
           setButtonLoading(false);
           window.location.href = result.checkout_url;
@@ -168,6 +179,7 @@ const DepositFunds = () => {
 
       }
     } catch (err) {
+      console.log("Deposit error:", err);
       setButtonLoading(false);
       const msg = err instanceof Error ? err.message : "Payment error!! Please try again later.";
       dispatch(setTxError(msg));
@@ -178,21 +190,21 @@ const DepositFunds = () => {
 
   return (
     <Layout>
-      <h2 className="text-2xl font-bold ml-8 mb-4">Deposit Funds</h2>
+      <h2 className="text-2xl font-bold ml-8 mb-4 dark:text-white">Deposit Funds</h2>
       <div className="w-full min-h-[80vh] flex flex-col items-center justify-center p-10 rounded-3xl">
         {formErrors.capxError && (
-          <div className="mb-2 w-full text-red-700 bg-red-100 p-3 rounded animate-fade-in">
+          <div className="mb-2 w-full text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-200 p-3 rounded animate-fade-in">
             {formErrors.capxError}
           </div>
         )}
-        <div className="border-gray-100 p-8 rounded-2xl shadow-md max-w-md w-full">
+        <div className="border-gray-100 dark:border-gray-700 bg-white dark:bg-white p-8 rounded-2xl shadow-md max-w-md w-full">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label>Select Currency</label>
+              <label className="text-black">Select Currency</label>
               <select
                 value={depositCoin}
                 onChange={(e) => setDepositCoin(e.target.value)}
-                className="w-full px-4 py-2 rounded border"
+                className="w-full px-4 py-2 rounded border bg-white text-black"
               >
                 {paymentConfigs.nowpayment.coins.map((coin) => (
                   <option key={coin} value={coin}>
@@ -203,12 +215,12 @@ const DepositFunds = () => {
             </div>
             
             <div>
-              <label>Enter Deposit Amount (USD)</label>
+              <label className="text-black">Enter Deposit Amount (USD)</label>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full px-4 py-2 rounded border"
+                className="w-full px-4 py-2 rounded border bg-white text-black"
                 placeholder="Enter deposit amount."
                 min="100"
                 step="0"
@@ -226,14 +238,15 @@ const DepositFunds = () => {
             </div> */}
 
             <div>
-              <label className="flex items-center">Select Deposit Method</label>
+              <label className="flex items-center text-black">Select Deposit Method</label>
               <div className="flex items-center space-x-4">
                 <select
-                  className="w-full px-4 py-2 rounded border"
+                  className="w-full px-4 py-2 rounded border bg-white text-black"
                   value={depositMethod}
                   onChange={e => setDepositMethod(e.target.value)}
                 >
-                  <option value="nowpayment">ePayment</option>
+                  <option value="nowpayment">Now Payment</option>
+                  {/* <option value="coinspayment">Coins Payment</option> */}
                   <option value="manual">Manual</option>
                 </select>
               </div>
@@ -246,7 +259,7 @@ const DepositFunds = () => {
                 onChange={(e) => setAgree(e.target.checked)}
                 className="mr-2 w-10 h-10 accent-[#7A44FF]"
               />
-              <label>
+              <label className="text-black">
                 I understand that sending crypto to an incorrect address or using the wrong chain may result in the permanent loss of funds.
               </label>
             </div>

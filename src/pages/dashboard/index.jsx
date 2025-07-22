@@ -23,10 +23,12 @@ const Dashboard = () => {
     dispatch(getUser());
   }, [dispatch]);
 
+  // console.log("Dashboard Data:", dashboard?.transactions);
+
   if (loading) return <Loader />;
   if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
   if (!dashboard) return null;
-
+ 
   return (
     <Layout>
       {/* Email update warning */}
@@ -46,8 +48,8 @@ const Dashboard = () => {
            <div className=" grid grid-cols-1 xl:grid-cols-[100%] justify-between gap-4">
             <Box user={user} dashboard={dashboard} />
           </div>
-          <SummaryGraph monthlyData={dashboard.monthlyData} />
-          <StatusTable transactions={dashboard.transactions} />
+          <SummaryGraph monthlyData={dashboard?.monthlyData} />
+          <StatusTable transactions={dashboard?.transactions || []} />
         </div>
         <div className="md:space-y-4 md:sticky max-md:flex flex-col w-full gap-2 top-4 self-start">
           <UserProfile user={user} dashboard={dashboard} />

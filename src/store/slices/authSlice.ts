@@ -25,6 +25,7 @@ interface User {
   is_phone_verified: boolean;
   is_token_purchased: boolean;
   mobile_number: string;
+  current_level: string;
   is_active?: boolean;
   is_referred?: boolean;
   referral_id: string;
@@ -241,16 +242,29 @@ export const metamaskLoginThunk = createAsyncThunk(
       return rejectWithValue(error.response?.data || error.message);
     }
   }
-);
+); 
 
 export const googleLoginThunk = createAsyncThunk(
   'auth/googleLogin',
-  async ({ credential, refcode }: { credential: string; refcode: string }, { rejectWithValue }) => {
+  async ({ credential, refcode, country }: { credential: string; refcode: string; country: string }, { rejectWithValue }) => {
     try {
-      const response = await authApi.googleSignIn(credential, refcode);
+      // console.log("Auth slice: Google login attempt with:", { 
+      //   credential: credential ? "present" : "missing", 
+      //   credentialLength: credential?.length,
+      //   refcode, 
+      //   country 
+      // });
+      
+      const response = await authApi.googleSignIn(credential, refcode, country);
+      // console.log("Auth slice: Google login API response:", response);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Google login failed');
+      // console.error("Auth slice: Google login error:", error);
+      // console.error("Auth slice: Error response:", error.response);
+      // console.error("Auth slice: Error data:", error.response?.data);
+      
+      const errorMessage = error.response?.data?.message || error.message || 'Google login failed';
+      return rejectWithValue(errorMessage);
     }
   }
 );
