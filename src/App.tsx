@@ -56,7 +56,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/success" element={<PaymentSuccess />} />
               <Route path="/dashboard/failed" element={<PaymentFailed />} />
-              <Route path="/buy-token" element={<BuyCapX />} />
+              <Route path="/buy-crypto" element={<BuyCapX />} />
               <Route path="/deposit-history" element={<DepositHistory />} />
               <Route path="/token-purchase-history" element={<TokenHistory />} />
               <Route path="/withdraw" element={<Withdraw />} />

@@ -138,7 +138,7 @@ const TwoFA = () => {
                 <QRCode value={user.twokey.otpauth_url} size={140} />
               )}
               <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs font-mono bg-gray-200 dark:bg-zinc-700 px-2 py-1 rounded select-all">{user.twokey?.base32}</span>
+                <span className="text-xs font-mono bg-gray-200 dark:bg-zinc-700 px-2 py-1 rounded select-all dark:text-white">{user.twokey?.base32}</span>
                 <button
                   onClick={handleCopy}
                   className="text-xs px-2 py-1 bg-[#7A44FF] text-white rounded hover:bg-[#5a2bbf]"

@@ -23,6 +23,7 @@ import SignInOptions from "../../components/auth";
 import loginIllustration from '../../assets/images/login_illustaration.png';
 import lightLogo from "../../assets/images/capshield_logo_dark.png";
 import darkLogo from "../../assets/images/capshield_logo_light.png";
+import Loader from "../loader";
 
 const LoginPage = () => {
 
@@ -53,7 +54,7 @@ const LoginPage = () => {
   const metadata = {
     name: "CAPX",
     description: "CAPX",
-    url: "https://zynking.com",
+    url: "https://dashboard.capshield.io",
     icons: ["https://avatars.zynking.com/"],
   };
 
@@ -73,6 +74,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true); // Add preloader state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [formErrors, setFormErrors] = useState({ email: "", password: "", loginError: "" });
@@ -81,6 +83,7 @@ const LoginPage = () => {
   const storedTheme = localStorage.getItem("theme");
   const [iamconnect, setIamConnecting] = useState(false);
   const [blocked, setBlocked] = useState(false);
+  const [userCountry, setUserCountry] = useState('UAE');
   const BLOCKED_COUNTRIES = [
       "US", // United States
       "CA", // Canada
@@ -100,6 +103,15 @@ const LoginPage = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
+  // Preloader effect - show loader for 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   //useeffect add countries restriction here
   useEffect(() => {
     const checkLocation = async () => {
@@ -109,8 +121,13 @@ const LoginPage = () => {
         if (BLOCKED_COUNTRIES.includes(data.country)) {
           setBlocked(true);
         }
+        // Set user country for login
+        if (data.country_name) {
+          setUserCountry(data.country_name);
+        }
       } catch (err) {
         console.error("Geolocation check failed:", err);
+        setUserCountry('United Arab Emirates'); // fallback
       }
     };
 
@@ -166,11 +183,13 @@ const LoginPage = () => {
     let errors = { email: "", password: "" };
     let valid = true;
 
-    if (!validateEmail(email)) {
-      setLoading(false);
-      errors.email = "Please enter a valid email address.";
-      valid = false;
-    }
+
+    // if (!validateEmail(email)) {
+    //   setLoading(false);
+    //   errors.email = "Please enter a valid email address.";
+    //   valid = false;
+    // }
+
     if (!password) {
       setLoading(false);
       errors.password = "Password cannot be empty.";
@@ -190,6 +209,7 @@ const LoginPage = () => {
         navigate("/dashboard");
       }
     } else {
+      
       setLoading(false);
       const errorMessage =
         typeof payload === "string"
@@ -201,14 +221,30 @@ const LoginPage = () => {
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
+      // console.log("Google login initiated:", credentialResponse);
+      
+      if (!credentialResponse?.credential) {
+        throw new Error("No credential received from Google");
+      }
+      
       const credential = credentialResponse.credential;
       const refcode = "";
-      const resultAction = await dispatch(googleLoginThunk({ credential, refcode }));
+      const country = userCountry;
+      
+      // console.log("Google login payload:", { 
+      //   credential: credential ? "present" : "missing", 
+      //   credentialLength: credential?.length,
+      //   refcode, 
+      //   country 
+      // });
+      
+      const resultAction = await dispatch(googleLoginThunk({ credential, refcode, country }));
       const payload = resultAction.payload;
-      if (
-        resultAction.type === googleLoginThunk.fulfilled.type &&
-        payload?.status === "ok"
-      ) {
+      
+      // console.log("Google login result action:", resultAction);
+      // console.log("Google login payload:", payload);
+      
+      if (resultAction.type === googleLoginThunk.fulfilled.type && payload?.status === "ok") {
         if (payload.is_active) {
           navigate("/two-factor", {
             state: {
@@ -221,12 +257,15 @@ const LoginPage = () => {
           navigate("/dashboard");
         }
       } else {
+        // console.error("Google login error - fulfilled but status not ok:", resultAction);
+        const errorMessage = payload?.message || payload || "Google login failed! Please create an account with referral link or try again.";
         setFormErrors({
           ...formErrors,
-          loginError: payload?.message || "Google login failed",
+          loginError: errorMessage,
         });
       }
     } catch (error) {
+      console.error("Google login error - catch block:", error);
       setFormErrors({
         ...formErrors,
         loginError: "Google login failed or cancelled. Please try again.",
@@ -324,6 +363,9 @@ const LoginPage = () => {
       </div>
     );
   }
+
+  // Show preloader for 3 seconds
+  if (pageLoading) return <Loader />;
 
   return (
     <>

@@ -5,7 +5,7 @@ import BuyTableRow from "../../components/buycapx/BuyTableRow";
 import StakeTableRow from "../../components/buycapx/StakeTableRow";
 import BuyCapXDetails from "../../components/buycapx/BuyCapXDetails";
 import { getTokenPlanThunk, clearTransactionState } from "../../store/slices/transactionSlice";
-
+ 
 
 const BuyCapX = () => {
   const dispatch = useDispatch();
@@ -26,10 +26,11 @@ const BuyCapX = () => {
       key: "buy",
       label: "Buy Crypto",
       headers: [
+        "Token",
         "Investment",
-        "Price",
+        "Price (USD)",
         "TGE Unlock",
-        "Lock Period",
+        "Lock Period (Cliff)",
         "Vesting",
         "Action",
       ],
@@ -62,7 +63,7 @@ const BuyCapX = () => {
 
   return (
     <Layout>
-      <div className="md:p-6 p-2 my-6 w-full max-w-5xl mx-auto">
+      <div className="md:p-6 p-2 my-6 w-full">
         <h1 className="text-xl sm:text-2xl md:text-4xl dark:text-white font-semibold mb-6">
           Buy / Stake Crypto
         </h1>

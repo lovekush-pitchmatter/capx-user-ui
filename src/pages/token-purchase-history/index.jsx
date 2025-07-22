@@ -22,8 +22,6 @@ const getStatusClass = (status) => {
 const DepositHistory = () => {
   const dispatch = useDispatch();
   const { tokenPurchaseHistory, loading, error } = useSelector((state) => state.transaction);
-
-  console.log("Deposit History:", tokenPurchaseHistory);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -43,7 +41,7 @@ const DepositHistory = () => {
 
   return (
     <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Token Purchase History
         </h2>
@@ -54,9 +52,10 @@ const DepositHistory = () => {
               <tr>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Sr.No</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Transaction ID</th>
-                <th className="p-4 max-lg:whitespace-nowrap text-white">Purchased Amount(USD)</th>
-                <th className="p-4 max-lg:whitespace-nowrap text-white">Token Price(USD)</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Amount</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Paying Currency</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Token Amount</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Token Currency</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Date</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Transaction Status</th>
               </tr>
@@ -86,9 +85,10 @@ const DepositHistory = () => {
                     <td className="p-2 sm:p-4">
                       {item.id}
                     </td>
-                    <td className="p-2 sm:p-4">{item.usdamount}</td>
-                    <td className="p-2 sm:p-4">{item.token_price_during_purchase}</td>
-                    <td className="p-2 sm:p-4">{item.token_amount}</td>
+                    <td className="p-2 sm:p-4">{parseFloat(item.usdamount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="p-2 sm:p-4">USD</td>
+                    <td className="p-2 sm:p-4">{parseFloat(item.token_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="p-2 sm:p-4">CAPX</td>
                     <td className="p-2 sm:p-4">
                       {new Date(item.createdAt).toLocaleString()}
                     </td>
@@ -104,8 +104,8 @@ const DepositHistory = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center p-4">
-                    No deposit history found.
+                  <td colSpan="8" className="text-center p-4 dark:text-white">
+                    No token purchase history found.
                   </td>
                 </tr>
               )}

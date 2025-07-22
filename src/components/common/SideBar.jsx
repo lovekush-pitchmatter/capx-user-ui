@@ -25,10 +25,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       children: [
         { label: "Balance", icon: MdChevronRight, path: "/balance" },
         { label: "Deposit", icon: MdChevronRight, path: "/deposit-funds" },
-        { label: "Transfer", icon: MdChevronRight, path: "/transfer" },
+        // { label: "Transfer", icon: MdChevronRight, path: "/transfer" },
       ],
     },
-    { label: "Buy Crypto", icon: Token, path: "/buy-token" },
+    { label: "Buy Crypto", icon: Token, path: "/buy-crypto" },
     {
       label: "Reports",
       icon: Reports,

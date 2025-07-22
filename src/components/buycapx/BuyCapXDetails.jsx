@@ -14,7 +14,7 @@ const BuyCapXDetails = ({ plan, onBack }) => {
   const success = !!data && data.status === "ok";
   const navigate = useNavigate();
 
-  const [orderAmount, setOrderAmount] = useState(plan.minimum_investment || 100);
+  const [orderAmount, setOrderAmount] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   const handleConfirm = async() => {
@@ -32,7 +32,25 @@ const BuyCapXDetails = ({ plan, onBack }) => {
       });
       return;
     }
-    if (orderAmount < plan.minimum_investment || orderAmount > plan.maximum_investment) {
+    
+    // Validate order amount
+    const amount = parseFloat(orderAmount);
+    if (!orderAmount || isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid amount greater than 0.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+      return;
+    }
+    
+    if (amount < plan.minimum_investment || amount > plan.maximum_investment) {
       toast.error(`Please enter an amount between ${plan.minimum_investment} and ${plan.maximum_investment}.`, {
         position: "top-right",
         autoClose: 5000,
@@ -46,7 +64,7 @@ const BuyCapXDetails = ({ plan, onBack }) => {
       });
       return;
     }
-    const result = await dispatch(buyTokenPlanThunk({ planId: plan._id, orderAmount: orderAmount }));
+    const result = await dispatch(buyTokenPlanThunk({ planId: plan._id, orderAmount: amount }));
     console.log("result", result)
     if (result.payload.status === "ok") {
       setShowModal(true);
@@ -63,12 +81,15 @@ const BuyCapXDetails = ({ plan, onBack }) => {
   };
 
 
-  const tokensToReceive = (orderAmount / plan.issued_price).toFixed(2);
+  const tokensToReceive = orderAmount && !isNaN(parseFloat(orderAmount)) && parseFloat(orderAmount) > 0 
+    ? (parseFloat(orderAmount) / plan.issued_price).toFixed(2) 
+    : "0.00";
 
   return (
     <>
       {showModal && success && (
         <SuccessModal
+          token={tokensToReceive}
           onClose={handleCloseModal}
           loading={loading}
           error={error}
@@ -76,7 +97,7 @@ const BuyCapXDetails = ({ plan, onBack }) => {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4 max-w-5xl mx-auto rounded-2xl lg:p-8 p-4 bg-[#F8F3FF] dark:bg-zinc-800">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4 mx-auto rounded-2xl lg:p-8 p-4 bg-[#F8F3FF] dark:bg-zinc-800">
         {/* Left Box */}
         <div className="px-6 py-10 border-2 border-[#7A44FF] rounded-xl bg-white dark:bg-[#EDE6FF]">
           <div className="flex gap-2 items-center mb-6">
@@ -114,14 +135,14 @@ const BuyCapXDetails = ({ plan, onBack }) => {
               <input
                 type="number"
                 min={plan.minimum_investment}
-                max={plan.maximum_investment}
                 value={orderAmount}
-                onChange={(e) => setOrderAmount(Number(e.target.value))}
+                placeholder="Enter amount"
+                onChange={(e) => setOrderAmount(e.target.value)}
                 className="px-4 py-2 w-full bg-[#F4F4F4] outline-none text-sm"
               />
               <span
                 className="px-3 text-xs text-[#7A44FF] font-medium cursor-pointer"
-                onClick={() => setOrderAmount(plan.maximum_investment)}
+                onClick={() => setOrderAmount(plan.maximum_investment.toString())}
               >
                 MAX
               </span>
@@ -190,7 +211,7 @@ const BuyCapXDetails = ({ plan, onBack }) => {
               <button
                 onClick={handleConfirm}
                 className="w-1/2 text-sm font-semibold bg-[#7A44FF] text-white rounded-xl py-2 shadow disabled:bg-gray-400"
-                disabled={!agreeTerms || loading}
+                disabled={!agreeTerms || loading || !orderAmount || parseFloat(orderAmount) <= 0}
               >
                 {loading ? "Confirming..." : "Confirm"}
               </button>

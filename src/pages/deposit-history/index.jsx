@@ -4,7 +4,7 @@ import Layout from "../../components/layout/Layout";
 import { LuEye } from "react-icons/lu";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { depositReport } from "../../store/slices/transactionSlice";
-
+ 
 const getStatusClass = (status) => {
   switch (status) {
     case "completed":
@@ -12,6 +12,8 @@ const getStatusClass = (status) => {
       return "text-green-600";
     case "pending":
       return "text-yellow-500";
+    case "processing":
+      return "text-blue-500";
     case "failed":
       return "text-red-600";
     default:
@@ -43,7 +45,7 @@ const DepositHistory = () => {
 
   return (
     <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Deposit History
         </h2>
@@ -54,7 +56,11 @@ const DepositHistory = () => {
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Sr.No</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Transaction ID</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Deposited Amount</th>
-                <th className="p-4 max-lg:whitespace-nowrap text-white">Date</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Currency</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Payment Method</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Amount Received</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Received Currency</th>
+                <th className="p-4 max-lg:whitespace-nowrap text-white">Deposit Date</th>
                 <th className="p-4 max-lg:whitespace-nowrap text-white">Transaction Status</th>
               </tr>
             </thead>
@@ -83,7 +89,20 @@ const DepositHistory = () => {
                     <td className="p-2 sm:p-4">
                       {item._id}
                     </td>
-                    <td className="p-2 sm:p-4">{item.deposit_amount}</td>
+                    <td className="p-2 sm:p-4">{parseFloat(item.deposit_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="p-2 sm:p-4">{item.deposit_chain == "usdt.bsc" || item.deposit_chain == "usdt.tron"  || item.deposit_chain == "usdt.eth" ? "USDT" : "USD"}</td>
+                    <td className="p-2 sm:p-4">{item.gateway_type == "nowpayments" ? "Nowpayments" : item.gateway_type == "coinspayment" ? "Coinspayment" : item.gateway_type == "manual" ? "Manual" : "Unknown"}</td>
+                    {item.txnstatus == "completed" || item.txnstatus == "success" ? (
+                      <>
+                        <td className="p-2 sm:p-4">${parseFloat(item.deposit_amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td className="p-2 sm:p-4">USD</td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="p-2 sm:p-4">-</td>
+                        <td className="p-2 sm:p-4">-</td>
+                      </>
+                    )}
                     <td className="p-2 sm:p-4">
                       {new Date(item.updatedAt).toLocaleString()}
                     </td>
@@ -99,7 +118,7 @@ const DepositHistory = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center p-4">
+                  <td colSpan="9" className="text-center p-4 dark:text-white">
                     No deposit history found.
                   </td>
                 </tr>

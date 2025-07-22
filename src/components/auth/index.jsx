@@ -35,14 +35,14 @@ import { useNavigate } from "react-router-dom";
 //   },
 // });
 
-export default function SignInOptions({ refcode }) {
+export default function SignInOptions({ refcode, country }) {
   const projectId = "ad069583f9dd4f242a83d33ff462a15a";
   const clientId = "142955849396-llsu26h5650poa898j1s9rtspbfs7gom.apps.googleusercontent.com";
   const networks = [mainnet];
   const metadata = {
     name: "CAPX",
     description: "CAPX",
-    url: "https://zynking.com",
+    url: "https://dashboard.capshield.io",
     icons: ["https://avatars.zynking.com/"],
   };
 
@@ -71,7 +71,7 @@ export default function SignInOptions({ refcode }) {
     try {
       const credential = credentialResponse.credential;
       if (!credential) throw new Error("Google credential missing");
-      const resultAction = await dispatch(googleLoginThunk({ credential, refcode }));
+      const resultAction = await dispatch(googleLoginThunk({ credential, refcode, country }));
       const payload = resultAction.payload;
       if (resultAction.type === googleLoginThunk.fulfilled.type && payload?.status === "ok") {
         if (payload.is_active) {
@@ -86,7 +86,7 @@ export default function SignInOptions({ refcode }) {
           navigate("/dashboard");
         }
       } else {
-        setFormErrors({ ...formErrors, loginError: payload?.message || "Google login failed" });
+        setFormErrors({ ...formErrors, loginError: payload?.message || "Google login failed! Please create an account with referral link or try again." });
       }
     } catch (error) {
       console.error("Google login error:", error);

@@ -33,9 +33,7 @@ const formatDate = (date) => {
 
 const ReferralReport = () => {
   const dispatch = useDispatch();
-  const referralReportState = useSelector((state) => state.transaction.referralReport) || {};
-  const { data: referralHistory = [], loading = false, error = null } = referralReportState;
-
+  const { referralHistory = [], loading = false, error = null } = useSelector((state) => state.transaction);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -51,14 +49,20 @@ const ReferralReport = () => {
 
   const filteredData = (referralHistory || []).filter((item) => {
     const matchesSearch =
-      item.user?.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.user?.username.toLowerCase().includes(search.toLowerCase()) ||
-      item.user?.mobile.includes(search);
-    const matchesStatus = statusFilter ? item.txn_status === statusFilter : true;
+      (item.fullname?.toLowerCase().includes(search.toLowerCase()) ||
+      item.username?.toLowerCase().includes(search.toLowerCase()) ||
+      item.email?.toLowerCase().includes(search.toLowerCase()) ||
+      item.mobileno?.includes(search)) ?? false;
+    
+    const matchesStatus = statusFilter === "" ? true : 
+      statusFilter === "completed" ? item.is_token_purchased === true : 
+      statusFilter === "pending" ? item.is_token_purchased === false : true;
+    
     const itemDate = new Date(item.createdAt);
     const matchesDate =
-      (!startDate || itemDate >= startDate) &&
-      (!endDate || itemDate <= endDate);
+      (!startDate || itemDate >= new Date(startDate.setHours(0, 0, 0, 0))) &&
+      (!endDate || itemDate <= new Date(endDate.setHours(23, 59, 59, 999)));
+    
     return matchesSearch && matchesStatus && matchesDate;
   });
 
@@ -75,11 +79,11 @@ const ReferralReport = () => {
 
   return (
     <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Referral Report
         </h2>
-        <div className="flex flex-wrap items-center gap-4 bg-[#f6f1ff] border border-[#cfc1f7] rounded-xl px-4 py-3 mb-4">
+        <div className="flex flex-wrap items-center gap-4 bg-[#f6f1ff] border border-[#cfc1f7] rounded-xl px-4 py-3 mb-4 relative overflow-visible">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-[#000]">Show</span>
             <div className="relative">
@@ -115,7 +119,7 @@ const ReferralReport = () => {
               </svg>
             </div>
           </div>
-          <div className="relative flex items-center">
+          <div className="relative flex items-center" style={{ zIndex: 1000 }}>
             <input
               ref={dateInputRef}
               type="text"
@@ -176,18 +180,40 @@ const ReferralReport = () => {
               />
             </svg>
             {showDatePicker && (
-              <div className="absolute z-50 top-12 left-0">
+              <div className="absolute z-[9999] top-full mt-1 left-0 bg-white shadow-2xl rounded-lg border-2 border-gray-200" style={{ zIndex: 9999 }}>
                 <DatePicker
                   selected={startDate}
                   onChange={(update) => {
                     setDateRange(update);
-                    if (update[0] && update[1]) setShowDatePicker(false);
+                    if (update[0] && update[1]) {
+                      setShowDatePicker(false);
+                      setCurrentPage(1);
+                    }
                   }}
                   startDate={startDate}
                   endDate={endDate}
                   selectsRange
                   inline
+                  maxDate={new Date()}
                 />
+                <div className="p-3 border-t border-gray-200 flex gap-2 justify-end bg-gray-50 rounded-b-lg">
+                  <button
+                    onClick={() => {
+                      setDateRange([null, null]);
+                      setShowDatePicker(false);
+                      setCurrentPage(1);
+                    }}
+                    className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    onClick={() => setShowDatePicker(false)}
+                    className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -200,12 +226,9 @@ const ReferralReport = () => {
                 setCurrentPage(1);
               }}
             >
-              <option value="">All status</option>
-              {statuses.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
+              <option value="">All Status</option>
+              <option value="completed">Active</option>
+              <option value="pending">Pending</option>
             </select>
             <svg
               className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2"
@@ -262,28 +285,30 @@ const ReferralReport = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto border-2 border-gray-100 dark:border-zinc-800 rounded-t-xl max-w-[89vw] mx-auto">
+        <div className="overflow-x-auto border-2 border-gray-100 dark:border-zinc-800 rounded-t-xl max-w-[89vw] mx-auto min-h-[400px]">
           <table className="w-full text-left text-sm sm:text-base border-collapse">
             <thead className="bg-[#F6EEFE] text-purple-500 whitespace-nowrap font-medium text-sm">
               <tr>
                 <th className="p-4 whitespace-nowrap">Joining Date</th>
-                <th className="p-4 whitespace-nowrap">Username</th>
                 <th className="p-4 whitespace-nowrap">Name</th>
-                <th className="p-4 whitespace-nowrap">Mobile</th>
+                <th className="p-4 whitespace-nowrap">Username</th>
+                <th className="p-4 whitespace-nowrap">Email ID</th>
                 <th className="p-4 whitespace-nowrap">Country</th>
+                <th className="p-4 whitespace-nowrap">Joining Date</th>
+                <th className="p-4 whitespace-nowrap">Level</th>
                 <th className="p-4 whitespace-nowrap">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="text-center p-4">
+                  <td colSpan="8" className="text-center p-4">
                     Loading...
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan="5" className="text-center p-4 text-red-500">
+                  <td colSpan="8" className="text-center p-4 text-red-500">
                     Error: {error}
                   </td>
                 </tr>
@@ -296,22 +321,24 @@ const ReferralReport = () => {
                     <td className="p-2 sm:p-4">
                       {new Date(item.createdAt).toLocaleString()}
                     </td>
-                    <td className="p-2 sm:p-4">{item.user?.username || "N/A"}</td>
-                    <td className="p-2 sm:p-4">{item.user?.name || "N/A"}</td>
-                    <td className="p-2 sm:p-4">{item.user?.mobile || "N/A"}</td>
-                    <td className="p-2 sm:p-4">{item.user?.country || "N/A"}</td>
+                    <td className="p-2 sm:p-4 capitalize">{item.fullname || "-"}</td>
+                    <td className="p-2 sm:p-4">{item.username || "-"}</td>
+                    <td className="p-2 sm:p-4">{item.email || "-"}</td>
+                    <td className="p-2 sm:p-4">{item.user_country || "-"}</td>
+                    <td className="p-2 sm:p-4">
+                      {new Date(item.createdAt).toLocaleString()}
+                    </td>
+                    <td className="p-2 sm:p-4">{item.level_eligibles == "level2" ? "Partner" : (item.level_eligibles == "level3" ? "Strategist" : "Member")}</td>
                     <td
-                      className={`p-4 font-medium ${getStatusClass(
-                        item.txn_status
-                      )}`}
+                      className={`p-4 font-medium ${item.is_token_purchased ? 'text-green-600' : 'text-red-600'}`}
                     >
-                      {item.txn_status}
+                      {item.is_token_purchased ? 'Active' : 'Pending'}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center p-4">
+                  <td colSpan="8" className="text-center p-4 dark:text-white">
                     No referral history found.
                   </td>
                 </tr>
@@ -320,39 +347,46 @@ const ReferralReport = () => {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="flex items-center justify-end gap-2 p-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-2 py-1 text-[#7A44FF] hover:bg-gray-100 disabled:opacity-50"
-            >
-              <MdChevronLeft size={20} />
-            </button>
+        {filteredData.length > 0 && (
+          <div className="flex items-center justify-between p-4 border-t border-gray-200">
+            <div className="text-sm text-gray-700">
+              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
+            </div>
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-2 py-1 text-[#7A44FF] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded"
+                >
+                  <MdChevronLeft size={20} />
+                </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`px-3 dark:text-white py-1 border-2 border-[#7A44FF] rounded-lg ${
-                  page === currentPage
-                    ? "bg-[#7a44ff] text-white"
-                    : "hover:bg-gray-100 dark:hover:text-black"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1 border-2 border-[#7A44FF] rounded-lg ${
+                      page === currentPage
+                        ? "bg-[#7a44ff] text-white"
+                        : "bg-white text-[#7A44FF] hover:bg-gray-100"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="px-2 py-1 text-[#7A44FF] hover:bg-gray-100 disabled:opacity-50"
-            >
-              <MdChevronRight size={20} />
-            </button>
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-2 py-1 text-[#7A44FF] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded"
+                >
+                  <MdChevronRight size={20} />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

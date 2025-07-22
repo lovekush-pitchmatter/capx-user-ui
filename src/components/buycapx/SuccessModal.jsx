@@ -2,7 +2,7 @@ import { IoClose } from "react-icons/io5";
 import success from '../../assets/success.png';
 import { useEffect, useState } from "react";
 
-const SuccessModal = ({ onClose }) => {
+const SuccessModal = ({ onClose, token }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const SuccessModal = ({ onClose }) => {
         </div>
         <h2 className="text-2xl dark:text-white font-bold mb-2">Purchase Successful!</h2>
         <p className="text-sm text-gray-600 dark:text-gray-200 mb-6">
-          You have successfully purchased <strong>40 CAPX</strong> tokens.
+          You have successfully purchased <strong>{token} CAPX</strong> tokens.
         </p>
         <button
           onClick={onClose}

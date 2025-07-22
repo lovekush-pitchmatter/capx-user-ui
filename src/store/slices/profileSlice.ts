@@ -5,12 +5,16 @@ interface ProfileState {
   profile_image: string | null;
   updateLoading: boolean;
   updateError: string | null;
+  socialMediaLinks: any[];
+  socialLinksLoading: boolean;
 }
 
 const initialState: ProfileState = {
   profile_image: null,
   updateLoading: false,
   updateError: null,
+  socialMediaLinks: [],
+  socialLinksLoading: false,
 };
 
 export const updateProfilePicture = createAsyncThunk(
@@ -97,6 +101,30 @@ export const verifyEmailOtp = createAsyncThunk(
   }
 );
 
+export const saveProfileLinks = createAsyncThunk(
+  "profile/saveProfileLinks",
+  async (profileLink: any[], { rejectWithValue }) => {
+    try {
+      const response = await profileApi.saveProfileLinks(profileLink);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to save profile links");
+    }
+  }
+);
+
+export const getProfileLinks = createAsyncThunk(
+  "profile/getProfileLinks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await profileApi.getProfileLinks();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to get profile links");
+    }
+  }
+);
+
 const profileSlice = createSlice({
   name: "profile",
   initialState,
@@ -168,6 +196,30 @@ const profileSlice = createSlice({
       })
       .addCase(verifyEmailOtp.rejected, (state, action) => {
         state.updateError = action.payload as string || "Invalid OTP.";
+      })
+      .addCase(saveProfileLinks.pending, (state) => {
+        state.socialLinksLoading = true;
+        state.updateError = null;
+      })
+      .addCase(saveProfileLinks.fulfilled, (state, action) => {
+        state.socialLinksLoading = false;
+        state.socialMediaLinks = action.payload.data || [];
+        state.updateError = null;
+      })
+      .addCase(saveProfileLinks.rejected, (state, action) => {
+        state.socialLinksLoading = false;
+        state.updateError = action.payload as string || "Failed to save profile links";
+      })
+      .addCase(getProfileLinks.pending, (state) => {
+        state.socialLinksLoading = true;
+      })
+      .addCase(getProfileLinks.fulfilled, (state, action) => {
+        state.socialLinksLoading = false;
+        state.socialMediaLinks = action.payload.data || [];
+      })
+      .addCase(getProfileLinks.rejected, (state, action) => {
+        state.socialLinksLoading = false;
+        state.updateError = action.payload as string || "Failed to get profile links";
       });
   },
 });

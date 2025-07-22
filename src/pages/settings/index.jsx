@@ -5,6 +5,7 @@ import VerifyEmail from "../../components/settings/SecurityPin";
 import ChangePassword from "../../components/settings/ChangePassword";
 import DeleteAccount from "../../components/settings/DeleteAccount";
 import TwoFA from "../../components/settings/TwoFA";
+import SocialMediaModal from "../../components/settings/SocialMediaModal";
 import Layout from "../../components/layout/Layout";
 import { MdEdit } from "react-icons/md";
 import {
@@ -15,6 +16,8 @@ import {
 } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePicture } from "../../store/slices/profileSlice";
+import { getProfileLinks } from "../../store/slices/profileSlice";
+import defaultImg from "../../assets/images/user_default.png";
 
 const baseTabs = [
   "Overview",
@@ -38,9 +41,11 @@ const Settings = () => {
   );
 
   const { loading } = useSelector((state) => state.profile);
+  const { socialMediaLinks } = useSelector((state) => state.profile);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const [fileError, setFileError] = useState(null);
+  const [showSocialModal, setShowSocialModal] = useState(false);
 
   useEffect(() => {
     setSearchParams({ tab: activeTab });
@@ -51,6 +56,11 @@ const Settings = () => {
       setActiveTab("Overview");
     }
   }, [user?.is_email_verified]);
+
+  useEffect(() => {
+    // Load social media links when component mounts
+    dispatch(getProfileLinks());
+  }, [dispatch]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -113,6 +123,20 @@ const Settings = () => {
     }
   };
 
+  const getSocialMediaLink = (platform) => {
+    const link = socialMediaLinks?.find(link => link.name === platform);
+    return link?.link || null;
+  };
+
+  const handleSocialIconClick = (platform) => {
+    const link = getSocialMediaLink(platform);
+    if (link) {
+      window.open(link, '_blank');
+    } else {
+      setShowSocialModal(true);
+    }
+  };
+
   return (
     <Layout>
       <div className="min-h-screen max-w-4xl mx-auto w-full rounded-xl sm:px-4 px-2 sm:py-6 py-4">
@@ -123,7 +147,7 @@ const Settings = () => {
               src={
                 user?.profile_image
                   ? user.profile_image
-                  : "https://randomuser.me/api/portraits/men/32.jpg"
+                  : defaultImg
               }
               alt="User"
               className="md:w-40 sm:w-28 w-20 h-20 md:h-40 sm:h-28 rounded-full border-[4px] border-violet-500"
@@ -174,10 +198,36 @@ const Settings = () => {
               @{user?.username}
             </p>
             <div className="flex gap-4 text-[#7A44FF]">
-              <FaInstagram size={28} />
-              <FaFacebook size={28} />
-              <FaSquareXTwitter size={28} />
-              <FaTelegram size={28} />
+              <FaInstagram 
+                size={28} 
+                className={`cursor-pointer transition-opacity ${getSocialMediaLink('instagram') ? 'hover:opacity-80' : 'opacity-50 hover:opacity-100'}`}
+                onClick={() => handleSocialIconClick('instagram')}
+                title={getSocialMediaLink('instagram') ? 'View Instagram Profile' : 'Add Instagram Link'}
+              />
+              <FaFacebook 
+                size={28} 
+                className={`cursor-pointer transition-opacity ${getSocialMediaLink('facebook') ? 'hover:opacity-80' : 'opacity-50 hover:opacity-100'}`}
+                onClick={() => handleSocialIconClick('facebook')}
+                title={getSocialMediaLink('facebook') ? 'View Facebook Profile' : 'Add Facebook Link'}
+              />
+              <FaSquareXTwitter 
+                size={28} 
+                className={`cursor-pointer transition-opacity ${getSocialMediaLink('twitter') ? 'hover:opacity-80' : 'opacity-50 hover:opacity-100'}`}
+                onClick={() => handleSocialIconClick('twitter')}
+                title={getSocialMediaLink('twitter') ? 'View Twitter Profile' : 'Add Twitter Link'}
+              />
+              <FaTelegram 
+                size={28} 
+                className={`cursor-pointer transition-opacity ${getSocialMediaLink('telegram') ? 'hover:opacity-80' : 'opacity-50 hover:opacity-100'}`}
+                onClick={() => handleSocialIconClick('telegram')}
+                title={getSocialMediaLink('telegram') ? 'View Telegram Profile' : 'Add Telegram Link'}
+              />
+              <button
+                onClick={() => setShowSocialModal(true)}
+                className="ml-2 text-sm bg-gradient-to-r from-[#B500EF] to-[#37009A] text-white px-3 py-1 rounded-md hover:opacity-90 transition-opacity"
+              >
+                Edit
+              </button>
             </div>
           </div>
         </div>
@@ -219,6 +269,12 @@ const Settings = () => {
 
         {/* Content */}
         <div className="py-6">{renderTabContent()}</div>
+        
+        {/* Social Media Modal */}
+        <SocialMediaModal 
+          isOpen={showSocialModal} 
+          onClose={() => setShowSocialModal(false)} 
+        />
       </div>
     </Layout>
   );

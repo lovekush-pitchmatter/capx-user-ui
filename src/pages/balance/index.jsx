@@ -71,7 +71,7 @@ const WalletBalance = () => {
 
   return (
     <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Wallet Balance
         </h2>
@@ -172,7 +172,7 @@ const WalletBalance = () => {
               ) : error ? (
                 <tr>
                   <td colSpan="7" className="text-center p-4 text-red-500">
-                    Error: {error}
+                    Error: {typeof error === 'string' ? error : error?.message || 'No data available'}
                   </td>
                 </tr>
               ) : paginatedData.length > 0 ? (
@@ -188,14 +188,21 @@ const WalletBalance = () => {
                     <td className="p-2 sm:p-4">{Number(item.available_balance || item.amount || 0).toFixed(2)}</td>
                     <td className="p-2 sm:p-4">${Number(item.usd_balance || 0).toFixed(2)}</td>
                     <td className="p-2 sm:p-4">
-                      <div className="flex gap-2">
+                      {item.coinname == "CAPX" ? <div className="flex gap-2">
+                        <Link to="/buy-crypto" className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm">
+                          Deposit
+                        </Link>
+                        {/* <Link to="/transfer" className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
+                          Transfer
+                        </Link> */}
+                      </div> : <div className="flex gap-2">
                         <Link to="/deposit-funds" className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm">
                           Deposit
                         </Link>
-                        <Link to="/transfer" className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
+                        {/* <Link to="/transfer" className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm">
                           Transfer
-                        </Link>
-                      </div>
+                        </Link> */}
+                      </div>}
                     </td>
                   </tr>
                 ))

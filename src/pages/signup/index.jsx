@@ -12,7 +12,8 @@ import lightLogo from "../../assets/images/capshield_logo_dark.png";
 import darkLogo from "../../assets/images/capshield_logo_light.png";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import axios from 'axios'; 
+import axios from 'axios';
+import Loader from "../loader"; 
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +38,7 @@ const SignUpPage = () => {
   const [havereferral, setHavereferral] = useState(false);
   const [regRequestId, setRequestId] = useState("");
   const [username, setUserName] = useState("");
+  const [pageLoading, setPageLoading] = useState(true); // Add preloader state
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { refcode } = useParams();
@@ -45,6 +47,7 @@ const SignUpPage = () => {
 
   const [phone, setPhone] = useState('');
   const [defaultCountry, setDefaultCountry] = useState('ae');
+  const [country, setCountry] = useState('United Arab Emirates');
 
     const [blocked, setBlocked] = useState(false);
     const BLOCKED_COUNTRIES = [
@@ -66,6 +69,15 @@ const SignUpPage = () => {
     setCountryCode(dialCode);
     setMobileNumber(number);
   };
+
+  // Preloader effect - show loader for 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
       const checkLocation = async () => {
@@ -89,9 +101,13 @@ const SignUpPage = () => {
         if (res.data?.country_code) {
           setDefaultCountry(res.data.country_code.toLowerCase());
         }
+        if (res.data?.country_name) {
+          setCountry(res.data.country_name);
+        }
       })
       .catch(() => {
         setDefaultCountry('ae');
+        setCountry('UAE');
       });
   }, []);
 
@@ -199,32 +215,39 @@ const SignUpPage = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    // Trim whitespace from all input fields
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
+    
     let errors = { email: '', password: '', confirmPassword: '', registerError: '' };
     let valid = true;
-    if (!firstName || !lastName || !email || !password || !confirmPassword || !username || !mobileNumber) {
+    if (!trimmedFirstName || !trimmedLastName || !trimmedEmail || !password || !confirmPassword || !trimmedUsername || !mobileNumber) {
       errors.registerError = "Please fill all fields.";
       valid = false;
     }
 
     const nameRegex = /^[A-Za-z]+$/;
 
-    if (!nameRegex.test(firstName)) {
+    if (!nameRegex.test(trimmedFirstName)) {
       errors.firstName = "First name must contain only letters.";
       valid = false;
     }
-    if (!nameRegex.test(lastName)) {
+    if (!nameRegex.test(trimmedLastName)) {
       errors.lastName = "Last name must contain only letters.";
       valid = false;
     }
 
-    const usernameRegex = /^[a-zA-Z0-9]{3,16}$/;
+    const usernameRegex = /^[a-zA-Z0-9]{6,16}$/;
 
-    if (!usernameRegex.test(username)) {
-      errors.userNameError = "Username must be alphanumeric and 3-16 characters long.";
+    if (!usernameRegex.test(trimmedUsername)) {
+      errors.userNameError = "Username must be alphanumeric and 6-16 characters long.";
       valid = false;
     }
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(trimmedEmail)) {
       errors.email = "Please enter a valid email address.";
       valid = false;
     }
@@ -242,15 +265,16 @@ const SignUpPage = () => {
     try {
       const resultAction = await dispatch(
         register({
-          email,
+          email: trimmedEmail,
           password,
           confirmPassword,
-          firstName,
-          lastName,
+          firstName: trimmedFirstName,
+          lastName: trimmedLastName,
           countryCode,
           mobileNumber: mobileNumber || undefined,
           refcode,
-          username
+          username: trimmedUsername,
+          country
         })
       );
       const payload = resultAction.payload;
@@ -364,6 +388,9 @@ const SignUpPage = () => {
     );
   }
 
+  // Show preloader for 3 seconds
+  if (pageLoading) return <Loader />;
+
   return (
     <>
       <div className="min-h-screen w-full flex flex-col lg:flex-row p-0 m-0 font-roboto">
@@ -441,7 +468,7 @@ const SignUpPage = () => {
               {/* Form Fields */}
               <div className="flex flex-col items-end gap-[12.17px] w-[340.26px]">
                 {/* Google and Apple Sign-In Buttons */}
-                <SignInOptions refcode={refcode} />
+                <SignInOptions refcode={refcode} country={country}/>
 
                 <div className="w-full">
                   {formErrors.registerSuccess && (

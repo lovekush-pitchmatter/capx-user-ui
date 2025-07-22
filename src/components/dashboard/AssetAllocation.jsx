@@ -3,14 +3,23 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// function getAssetData(dashboard, user) {
+//   const capx = user?.user_vested_tokens ?? 0;
+//   const usd = dashboard?.totalAssets ?? 0;
+//   const wallet_amount = user?.wallet_amount ?? 0;
+//   return {
+//     data: [capx, wallet_amount],
+//     labels: ["CAPX", "Wallet Amount"],
+//     colors: ["#A58CFF", "#FFD94D"]
+//   };
+// }
+
 function getAssetData(dashboard, user) {
   const capx = user?.user_vested_tokens ?? 0;
-  const usd = dashboard?.totalAssets ?? 0;
-  const wallet_amount = user?.wallet_amount ?? 0;
   return {
-    data: [capx, wallet_amount, usd],
-    labels: ["CAPX", "Wallet Amount", "USD"],
-    colors: ["#A58CFF", "#FFD94D", "#0dbab8"]
+    data: [capx],
+    labels: ["CAPX"],
+    colors: ["#A58CFF"]
   };
 }
 
@@ -32,7 +41,7 @@ export default function AssetAllocation({ dashboard, user }) {
   let chartData, tokenData;
   if (allZero) {
     chartData = {
-      labels: ["Wallet Amount"],
+      labels: ["CAPX"],
       datasets: [
         {
           data: [1],
@@ -44,7 +53,7 @@ export default function AssetAllocation({ dashboard, user }) {
     };
     tokenData = [
       {
-        label: "Wallet Amount",
+        label: "CAPX",
         color: "#A58cff",
         percentage: "0%",
       },
@@ -76,7 +85,11 @@ export default function AssetAllocation({ dashboard, user }) {
       <div className="h-36 flex justify-center items-center">
         <Doughnut data={chartData} options={options} />
       </div>
-     <div className="mt-2 space-y-2 text-sm dark:text-white">
+     {allZero ? (<div className="mt-4 text-center">
+        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+          No records found
+        </p>
+      </div>) : (<div className="mt-2 space-y-2 text-sm dark:text-white">
       {tokenData.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <span
@@ -87,7 +100,7 @@ export default function AssetAllocation({ dashboard, user }) {
           <span className="ml-auto font-semibold">{item.percentage}</span>
         </div>
       ))}
-    </div>
+    </div>)}  
     </div>
   );
 }
