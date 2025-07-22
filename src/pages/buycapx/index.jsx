@@ -40,19 +40,28 @@ const BuyCapX = () => {
       key: "stake",
       label: "Stake Crypto",
       headers: [
-        "Coin",
-        "Est.APR",
-        "Duration (months)",
-        "Minimum amount",
-        "Button",
+        "Token",
+        "Available Balance",
+        "APY / Reward Rate",
+        "Lock Period",
+        "Action",
       ],
       data: [
         {
-          coin: "CAPShield",
-          symbol: "CAPSX",
-          apr: "0.00%",
-          duration: "25 months",
-          minAmount: "100.00 USD",
+          tokenName: "CAPShield",
+          symbol: "CAPX",
+          availableBalance: "10,500 CAPX",
+          apy: "12% APY",
+          lockPeriod: "12 months",
+          buttonText: "Stake CAPX",
+        },
+        {
+          tokenName: "AngelSEED",
+          symbol: "ANGEL",
+          availableBalance: "87,000 ANGEL",
+          apy: "15% APY",
+          lockPeriod: "6 months",
+          buttonText: "BUY CAPX",
         },
       ],
       RowComponent: StakeTableRow,
@@ -122,29 +131,16 @@ const BuyCapX = () => {
                       <td colSpan={currentTab.headers.length} className="text-center py-12">Loading...</td>
                     </tr>
                   ) : activeTab === "stake" ? (
-                    <tr>
-                      <td
-                        colSpan={currentTab.headers.length}
-                        className="text-center py-12"
-                      >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full shadow-sm">
-                          <svg
-                            className="w-5 h-5 animate-pulse"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 1010 10A10 10 0 0012 2z"
-                            />
-                          </svg>
-                          Staking Coming Soon
-                        </div>
-                      </td>
-                    </tr>
+                    currentTab.data?.map((row, index) => (
+                      <currentTab.RowComponent
+                        key={index}
+                        data={row}
+                        onBuyClick={() => {
+                          setSelectedPlan(row);
+                          setShowDetails(true);
+                        }}
+                      />
+                    ))
                   ) : (
                     tokenPlans?.map((row, index) => (
                       <currentTab.RowComponent
