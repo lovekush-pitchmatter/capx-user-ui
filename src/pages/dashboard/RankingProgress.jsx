@@ -1,5 +1,5 @@
 import React from "react";
-import { FaAnt, FaBee } from "react-icons/fa"; // Using Font Awesome for icons
+// import { FaAnt, FaBee } from "react-icons/fa";
 
 const RankingProgress = () => {
   const currentRank = "Ant";
@@ -11,7 +11,8 @@ const RankingProgress = () => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4">
       <div className="flex flex-col items-center text-center">
-        <FaAnt size={30} className="text-purple-600 mb-1" />
+        {/* <FaAnt size={30} className="text-purple-600 mb-1" /> */}
+        <p>Ant</p>
         <span className="text-sm font-semibold text-gray-700">
           {currentRank} <br /> Current Rank
         </span>
@@ -34,7 +35,8 @@ const RankingProgress = () => {
       </div>
 
       <div className="flex flex-col items-center text-center">
-        <FaBee size={30} className="text-purple-600 mb-1" />
+        {/* <FaBee size={30} className="text-purple-600 mb-1" /> */}
+        <p>Bee</p>
         <span className="text-sm font-semibold text-gray-700">
           {nextRank} <br /> Next Rank
         </span>
