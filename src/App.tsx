@@ -38,6 +38,8 @@ import StakingReport from "./pages/staking-report";
 import PaymentSuccess from "./pages/status/success";
 import PaymentFailed from "./pages/status/failed";
 import Balance from "./pages/balance";
+import CapxDashboard from "./pages/capxdashboard";
+import AngelSeedReward from "./pages/angelSeedRewardHub";
 
 
 
@@ -84,7 +86,10 @@ function App() {
               <Route path="/deposit-success" element={<SuccessDeposit />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/capxdashboard" element={<CapxDashboard />} />
+              <Route path="/angelseedreward" element={<AngelSeedReward />} />
             </Route>
+
 
             {/* Catch-all route for 404 - must be last */}
             <Route path="*" element={<NotFoundPage />} />
