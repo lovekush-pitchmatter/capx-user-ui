@@ -107,9 +107,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           <button className="lg:hidden w-6 h-6" onClick={() => setIsOpen(!isOpen)}>
             <Menu color="white" />
           </button>
-          <button className="max-lg:hidden w-6 h-6" onClick={() => setIsCollapsed(!isCollapsed)}>
-            <Menu color="white" />
-          </button>
         </div>
 
         <nav>

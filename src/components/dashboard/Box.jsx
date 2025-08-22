@@ -1,83 +1,83 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { GoPeople } from "react-icons/go";
-import { HiOutlineCircleStack } from "react-icons/hi2";
 import { PiCoins, PiCurrencyDollarBold } from "react-icons/pi";
+import { HiOutlineCircleStack } from "react-icons/hi2";
+import { GoPeople } from "react-icons/go";
+//images
+import CAPXICON from "../../assets/dashboard/capx-owned.png";
+import INVESTED from "../../assets/dashboard/invested.png";
+import REFER from "../../assets/dashboard/referral-earnings.png";
+import CURRCAPXICON from "../../assets/dashboard/current-capx-worth.png";
 
-const Box = ({ user, dashboard }) => {
-  const navigate = useNavigate();
+const currency = (n = 0) =>
+  Number(parseFloat(n || 0)).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
-  const handleCardClick = (title) => {
-    if (title === "Total Direct Referrals") {
-      navigate("/referral-report");
-    }
-  };
+const number = (n = 0) =>
+  Number(parseFloat(n || 0)).toLocaleString("en-US", {
+    maximumFractionDigits: 2,
+  });
 
+const Box = ({ user = {}, dashboard = {} }) => {
   const statsData = [
     {
-      title: "Wallet Amount",
-      value: user.wallet_amount,
+      key: "invested",
+      title: "INVESTED",
+      value: currency(dashboard?.investedAmount ?? user?.wallet_amount ?? 0),
       unit: "USD",
-      icon: <PiCoins size={24} />,
-      color: "bg-pink-100 dark:bg-pink-100/30",
+      icon: <img src={INVESTED} alt="Invested-icon" className="w-8 h-8" />,
     },
     {
-      title: "Total Capx Token",
-      value: user.user_vested_tokens,
-      unit: "CAPX",
-      icon: <PiCurrencyDollarBold size={24} />,
-      color: "bg-yellow-100 dark:bg-yellow-100/30",
-    },
-    {
-      title: "Total Asset Value",
-      value: dashboard?.totalAssets || 0,
-      unit: "USD",
-      icon: <HiOutlineCircleStack size={24} />,
-      color: "bg-purple-100 dark:bg-purple-100/30",
-    },
-    {
-      title: "Total Direct Referrals",
-      value: dashboard?.totalDirectReferral || 0,
+      key: "capx",
+      title: "CAPX OWNED",
+      value: number(user?.user_vested_tokens ?? 0),
       unit: "",
-      icon: <GoPeople size={24} />,
-      color: "bg-red-100 dark:bg-red-100/30",
+      icon: <img src={CAPXICON} alt="Capx-icon" className="w-8 h-8" />,
+    },
+    {
+      key: "capxWorth",
+      title: "CURRENT CAPX WORTH",
+      value: currency(dashboard?.totalAssets ?? 0),
+      unit: "USD",
+      icon: <img src={CURRCAPXICON} alt="Curr-Capx-icon" className="w-8 h-8" />,
+    },
+    {
+      key: "referralEarnings",
+      title: "REFERRAL EARNINGS",
+      value: currency(dashboard?.referralEarnings ?? 0),
+      unit: "USD",
+      icon: <img src={REFER} alt="Referral-icon" className="w-8 h-8" />,
     },
   ];
 
-  //dashboard.totalDirectReferral
-
   return (
-    
-      <div className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center gap-4 w-full ">
-        {statsData.map((item, index) => (
+    <div className="w-full">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+        {statsData.map((item) => (
           <div
-            key={index}
-            onClick={() => handleCardClick(item.title)}
-            className={`relative overflow-hidden bg-white dark:bg-zinc-900 dark:text-white w-full h-[150px] p-4 rounded-xl flex flex-col md:items-start items-center max-md:justify-center shadow-lg gap-2 ${
-              item.title === "Total Direct Referrals" ? "cursor-pointer hover:shadow-xl transition-shadow duration-200" : ""
-            }`}
+            key={item.key}
+            className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-2xl shadow-sm p-2"
           >
-            <div className="flex max-sm:text-xl items-center gap-2 z-20">
-              {item.icon}
-              <h4 className="font-medium   z-20">{item.title}</h4>
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full flex-shrink-0">
+                {item.icon}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                  {/* tracking wider */}
+                  {item.title}
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {item.unit === "USD" ? "$" : ""}{item.value}
+                  {item.unit && item.unit !== "USD" ? ` ${item.unit}` : ""}
+                </p>
+              </div>
             </div>
-            <p className="text-2xl max-sm:text-3xl leading-none flex gap-2 items-center flex-wrap mt-2 md:mt-4 font-semibold  z-20">
-              {item.title === "Total Direct Referrals" 
-                ? parseInt(item.value || 0).toLocaleString('en-US')
-                : parseFloat(item.value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              } 
-              {item.unit && <span className="text-base">{item.unit}</span>}
-            </p>
-            <div
-              className={`absolute -top-16 -left-8 h-28 w-28 -z-0 rounded-full ${item.color}`}
-            ></div>
-            <div
-              className={`absolute -bottom-28 -right-10 h-40 w-40  -z-0 rounded-full ${item.color}`}
-            ></div>
           </div>
         ))}
       </div>
-     
+    </div>
   );
 };
 

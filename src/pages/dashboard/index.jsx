@@ -13,6 +13,16 @@ import { getTokenPlanThunk } from "../../store/slices/transactionSlice";
 import { Link } from "react-router-dom";
 import AssetAllocation from "../../components/dashboard/AssetAllocation";
 
+//new
+import BuyCapx from "../../components/dashboard/BuyCapx";
+import CalculateProfit from "../../components/dashboard/CalculateProfit";
+import CapxValue from "../../components/dashboard/CapxValue";
+import MyActivity from "../../components/dashboard/MyActivity";
+import Leaderboard from "../../components/dashboard/Leaderboard";
+import ReferralProgram from "../../components/dashboard/ReferralProgram";
+import LoginActivity from "../../components/dashboard/LoginActivity";
+import Portfolio from "../../components/dashboard/Portfolio";
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { dashboard, error, loading } = useSelector((state) => state.general);
@@ -43,18 +53,49 @@ const Dashboard = () => {
           </Link>
         </div> 
       )}
-      <div className="flex flex-col-reverse md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div className="  md:col-span-2 lg:col-span-3 space-y-4 bg-gray-100 dark:bg-zinc-200 rounded-xl p-2 md:p-4">
-           <div className=" grid grid-cols-1 xl:grid-cols-[100%] justify-between gap-4">
-            <Box user={user} dashboard={dashboard} />
-          </div>
+      <div className="w-full max-w-full overflow-x-hidden px-2 md:px-4">
+        {/* User Profile */}
+        <div className="space-y-4">
+          <UserProfile user={user} dashboard={dashboard} />
+        </div>
+
+        {/* Boxes with current data */}
+        <div className="space-y-6 mt-6">
+          <Box user={user} dashboard={dashboard} />
+        </div>
+        
+        {/* Rank Progression */}
+        <div className="space-y-6 mt-6">
           <SummaryGraph monthlyData={dashboard?.monthlyData} />
+        </div>
+
+        {/* colorful-boxes */}
+        <div className="space-y-6 mt-6">
           <StatusTable transactions={dashboard?.transactions || []} />
         </div>
-        <div className="md:space-y-4 md:sticky max-md:flex flex-col w-full gap-2 top-4 self-start">
-          <UserProfile user={user} dashboard={dashboard} />
-          <ActionButtons />
-          <AssetAllocation dashboard={dashboard} user={user} />
+
+        {/* Buy Capx + Profit */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <BuyCapx />
+          <CalculateProfit />
+        </div>
+
+        {/* Capx Value + Activity */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <CapxValue />
+          <MyActivity />
+        </div>
+
+        {/* Referral + Leaderboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <ReferralProgram />
+          <Leaderboard />
+        </div>
+
+        {/* Login Activity + Portfolio */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <LoginActivity />
+          <Portfolio />
         </div>
       </div>
     </Layout>

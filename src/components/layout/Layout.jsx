@@ -7,14 +7,14 @@ const Layout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-zinc-900 ">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white text-black" style={{ backgroundColor: "#ffffff" }}>
+      
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <main className="flex-1 sm:p-4 p-2 space-y-4 flex flex-col">
+      <main className="flex-1 p-2 sm:p-4 space-y-4 flex flex-col w-full">
         <Header isOpen={isOpen} />
 
         <div className="flex flex-col justify-between h-full">
           {children}
-
           <Footer />
         </div>
       </main>
