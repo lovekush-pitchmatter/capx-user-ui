@@ -39,7 +39,8 @@ import PaymentSuccess from "./pages/status/success";
 import PaymentFailed from "./pages/status/failed";
 import Balance from "./pages/balance";
 import CapxDashboard from "./pages/capxdashboard";
-import AngelSeedReward from "./pages/angelSeedRewardHub";
+import AngelSeedReward from "./pages/rewards-hub";
+import ReferralDashboard from "./pages/referral-dashboard";
 
 
 
@@ -88,6 +89,7 @@ function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/capxdashboard" element={<CapxDashboard />} />
               <Route path="/angelseedreward" element={<AngelSeedReward />} />
+              <Route path="/referral/dashboard" element={<ReferralDashboard />} />
             </Route>
 
 

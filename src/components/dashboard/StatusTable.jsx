@@ -9,28 +9,28 @@ const StatsCards = ({ angelBalance, angelWorth, referrals, activeInvestors }) =>
     {
       id: 1,
       title: "ANGEL BALANCE",
-      value: angelBalance || "143.567",
+      value: angelBalance || "0",
       bgColor: "bg-red-100",
       icon: AngelBal
     },
     {
       id: 2,
       title: "CURRENT ANGEL WORTH",
-      value: angelWorth || "$1.44",
+      value: angelWorth || "$0.00",
       bgColor: "bg-green-100",
       icon: CurrAngelWorth
     },
     {
       id: 3,
       title: "NO. OF REFERRALS",
-      value: referrals || "182",
+      value: referrals || "0",
       bgColor: "bg-purple-100",
       icon: NOfRef
     },
     {
       id: 4,
       title: "ACTIVE INVESTORS",
-      value: activeInvestors || "50",
+      value: activeInvestors || "0",
       bgColor: "bg-yellow-100",
       icon: Investors
     }

@@ -1,11 +1,11 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { authReducer, profileReducer, generalReducer, transactionReducer } from "./slices";
+import { authReducer, profileReducer, generalReducer, transactionReducer, rewardsHubReducer } from "./slices";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { encryptTransform } from "redux-persist-transform-encrypt";
 import constants from "../constants/envConstants";
 import { Persistor } from "redux-persist";
-
+ 
 const encryptor = encryptTransform({
   secretKey: constants.REDUX_PERSIST_KEY,
   onError: (error: any) => {
@@ -18,6 +18,7 @@ const rootReducer = combineReducers({
   profile: profileReducer,
   general: generalReducer,
   transaction: transactionReducer,
+  rewards: rewardsHubReducer,
 });
 
 const persistConfig = {

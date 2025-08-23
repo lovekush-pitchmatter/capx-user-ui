@@ -3,6 +3,7 @@ import { MdEdit } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePicture } from "../../store/slices/profileSlice";
 import defaultImg from "../../assets/images/user_default.png";
+import { logout } from "../../store/slices/authSlice";
 
 //icon-images
 import Polls from "../../assets/dashboard/polls.png";
@@ -22,6 +23,10 @@ const UserProfile = ({ user, dashboard }) => {
   const handleEditClick = () => {
     setFileError(null);
     fileInputRef.current.click();
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   const handleFileChange = (event) => {
@@ -95,6 +100,7 @@ const UserProfile = ({ user, dashboard }) => {
           {/* Logout button for mobile inside left section */}
           <div className="md:hidden">
             <button
+              onClick={handleLogout}
               type="button"
               className="ml-3 flex flex-col items-center text-gray-700 dark:text-gray-200 text-xs sm:text-sm hover:opacity-90"
             >

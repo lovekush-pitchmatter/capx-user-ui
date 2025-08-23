@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Copy, Check, Smartphone, Users, DollarSign } from "lucide-react";
 import USDTicon from "../../assets/dashboard/USDT.png";
-
+ 
 const ReferralProgram = () => {
   const [copied, setCopied] = useState(false);
   

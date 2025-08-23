@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboard } from "../../store/slices/generalSlice";
+import { fetchDashboard } from "../../store/slices/rewardsHubSlice";
 import { getUser } from "../../store/slices/authSlice";
 import ActionButtons from "../../components/dashboard/ActionButtons";
 import Box from "../../components/dashboard/Box";
@@ -25,20 +25,24 @@ import Portfolio from "../../components/dashboard/Portfolio";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { dashboard, error, loading } = useSelector((state) => state.general);
-  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     dispatch(fetchDashboard());
     dispatch(getTokenPlanThunk());
     dispatch(getUser());
   }, [dispatch]);
 
+  const rewardsHubState = useSelector((state) => state.rewardsHub || {});
+  const { userDashboard, error, loading } = rewardsHubState;
+  const user = useSelector((state) => state.auth.user);
+
   // console.log("Dashboard Data:", dashboard?.transactions);
 
   if (loading) return <Loader />;
   if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
-  if (!dashboard) return null;
- 
+  // if (!userDashboard) return null;
+
+  console.log("Dashboard Data:", userDashboard);
+
   return (
     <Layout>
       {/* Email update warning */}
@@ -56,22 +60,22 @@ const Dashboard = () => {
       <div className="w-full max-w-full overflow-x-hidden px-2 md:px-4">
         {/* User Profile */}
         <div className="space-y-4">
-          <UserProfile user={user} dashboard={dashboard} />
+          <UserProfile user={user} dashboard={userDashboard} />
         </div>
 
         {/* Boxes with current data */}
         <div className="space-y-6 mt-6">
-          <Box user={user} dashboard={dashboard} />
+          <Box user={user} dashboard={userDashboard} />
         </div>
         
         {/* Rank Progression */}
-        <div className="space-y-6 mt-6">
-          <SummaryGraph monthlyData={dashboard?.monthlyData} />
-        </div>
+        {/* <div className="space-y-6 mt-6">
+          <SummaryGraph monthlyData={userDashboard} />
+        </div> */}
 
         {/* colorful-boxes */}
         <div className="space-y-6 mt-6">
-          <StatusTable transactions={dashboard?.transactions || []} />
+          <StatusTable transactions={userDashboard?.transactions || []} />
         </div>
 
         {/* Buy Capx + Profit */}
