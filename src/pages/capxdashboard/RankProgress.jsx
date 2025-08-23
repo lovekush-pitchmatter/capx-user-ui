@@ -20,7 +20,7 @@ const RankProgress = () => {
         <div className="w-full bg-transparent rounded-full h-6 relative">
           <div
             className="bg-purple-700 h-6 rounded-full"
-            style={{ width: "50%"}}
+            style={{ width: "0%"}}
           ></div>
           <p className="absolute top-0 left-10">0.00</p>
           <span className="absolute inset-0 flex items-center justify-center text-md font-medium text-gray-700">

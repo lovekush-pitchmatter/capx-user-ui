@@ -8,14 +8,10 @@ const ProgressSection = () => {
 
   const achieversData = {
       daily: [
-        { rank: 1, name: "DailyStar", amount: "500.50", icon: "🥇" },
-        { rank: 2, name: "FastAchiever", amount: "420.20", icon: "🥈" },
-        { rank: 3, name: "QuickWin", amount: "310.15", icon: "🥉" },
+        { rank: 1, name: "lovekushdemo", amount: "10", icon: "🥇" },
       ],
       allTime: [
-        { rank: 1, name: "CryptoQueen", amount: "12,400.55655", icon: "🥇" },
-        { rank: 2, name: "0x4B...c21D", amount: "11,300.705", icon: "🥈" },
-        { rank: 3, name: "ChainWizard", amount: "10,700.20", icon: "🥉" },
+        { rank: 1, name: "lovekushdemo", amount: "10", icon: "🥇" },
       ],
     };
 
@@ -26,27 +22,27 @@ const ProgressSection = () => {
       {/* Top Row Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Total Earned */}
-        <div className="flex flex-col items-center justify-center border rounded-lg p-6" style={{ boxShadow: "0 2px 2px rgba(0,0,0,0.1), 0 -2px 2px rgba(0,0,0,0.1)" }}>
+        <div className="flex flex-col items-center justify-center border rounded-lg p-6">
           <div className="">
             <img src={dailyEarned} alt="Daily Earned" className="w-15 h-15" />
           </div>
           <p className="text-gray-600 font-semibold mt-2">Total Earned</p>
-          <h3 className="text-2xl font-bold">4,250.00</h3>
+          <h3 className="text-2xl font-bold">0.00</h3>
           <span className="text-sm text-gray-500">ANGEL</span>
         </div>
 
         {/* This Week */}
-        <div className="flex flex-col items-center justify-center border rounded-lg p-6" style={{ boxShadow: "0 2px 2px rgba(0,0,0,0.1), 0 -2px 2px rgba(0,0,0,0.1)" }}>
+        <div className="flex flex-col items-center justify-center border rounded-lg p-6">
           <div className="">
             <img src={currentWeek} alt="Current Week" className="w-15 h-15" />
           </div>
           <p className="text-gray-600 mt-2 font-semibold">This Week</p>
-          <h3 className="text-2xl font-bold">12 tasks</h3>
-          <span className="text-sm text-gray-500">+82.01 ANGEL</span>
+          <h3 className="text-2xl font-bold">0 tasks</h3>
+          <span className="text-sm text-gray-500">+0.00 ANGEL</span>
         </div>
 
         {/* Top Achievers */}
-        <div className="border rounded-lg p-4" style={{ boxShadow: "0 2px 2px rgba(0,0,0,0.1), 0 -2px 2px rgba(0,0,0,0.1)" }}>
+        <div className="border rounded-lg p-4">
           <div className="flex justify-between items-center border-b pb-2 mb-3">
             <p className="font-semibold">Top Achievers</p>
             <div className="flex gap-2 bg-gray-200 p-1 rounded-md">
