@@ -6,11 +6,12 @@ import allTH from "../../assets/images/ath.png";
 import connectWallet from "../../assets/images/connect-wallet.png";
  
 const ReferralDashboard = () => {
-  const [referralLink, setReferralLink] = useState('https://capshield.io/username');
+  const [referralLink, setReferralLink] = useState('https://capshield.io/lovekushtari');
   const [showEntries, setShowEntries] = useState('10');
   const [dateRange, setDateRange] = useState('01 June 2025 - 30 June 2025');
   const [statusFilter, setStatusFilter] = useState('All status');
   const [searchQuery, setSearchQuery] = useState('');
+  const [claimAmount, setClaimAmount] = useState("$0");
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -28,40 +29,41 @@ const ReferralDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* Referral Program Card */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="bg-[#F6EEFE] rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">Referral Program</h2>
-            
-            {/* Referral Link Input */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={referralLink}
-                  onChange={(e) => setReferralLink(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  readOnly
-                />
-                <button
-                  onClick={copyToClipboard}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
+            <div className="bg-[#F6EEFE]">
+                  {/* Referral Link Input */}
+                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={referralLink}
+                        onChange={(e) => setReferralLink(e.target.value)}
+                        className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        readOnly
+                      />
+                      <button
+                        onClick={copyToClipboard}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
 
-            <div className="flex flex-col md:flex-row items-start gap-6">
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Earn USDT Instantly</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Share your unique link and earn 5% rewards on every purchase made through it! Invite friends—earn together!
-                </p>
-              </div>
-              
-              {/* Illustration */}
-              <div className="flex-shrink-0">
-                <img src={refImg} alt="referral" className="w-32 h-24 object-contain" />
-              </div>
+                  <div className="flex flex-col md:flex-row items-start gap-6">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-800 mb-3">Earn USDT Instantly</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        Share your unique link and earn 5% rewards on every purchase made through it! Invite friends—earn together!
+                      </p>
+                    </div>
+                    
+                    {/* Illustration */}
+                    <div className="flex-shrink-0">
+                      <img src={refImg} alt="referral" className="w-32 h-24 object-contain" />
+                    </div>
+                  </div>
             </div>
           </div>
 
@@ -77,10 +79,21 @@ const ReferralDashboard = () => {
       AVAILABLE TO CLAIM
     </p>
     <div className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
-      <span className="text-2xl font-bold text-gray-800">$0</span>
-      <span className="text-sm text-gray-500">MIN: $30.00</span>
+      <div className="relative flex items-center w-full">
+        <input
+          type="text"
+          placeholder='Enter claim amount.'
+          value={claimAmount}
+          onChange={(e) => setClaimAmount(e.target.value)}
+          className="w-full pl-3 pr-20 py-2 rounded-lg border border-gray-300 text-sm text-gray-800 focus:outline-none"
+        />
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1 rounded-lg bg-white border border-gray-300 text-xs font-medium text-gray-600">
+          MIN: $30.00
+        </span>
+      </div>
     </div>
   </div>
+
 
   {/* Gradient Button */}
   <button className="w-full bg-gradient-to-r from-[#B500EF] to-[#37009A] hover:opacity-90 text-white py-3 rounded-lg font-medium transition-all duration-200 mb-6">
@@ -89,24 +102,28 @@ const ReferralDashboard = () => {
 
   {/* Stats */}
   <div className="grid grid-cols-2 gap-4">
-    <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center">
-      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-        <img src={allTH} alt="all-time-earnings" className="w-5 h-5" />
+    <div className="bg-gray-50 rounded-lg p-4 flex items-center gap-4">
+      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+        <img src={allTH} alt="all-time-earnings" className="w-15 h-15" />
       </div>
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-        ALL-TIME EARNINGS
-      </p>
-      <p className="text-lg font-bold text-gray-800">$25000.00</p>
+      <div className="flex flex-col">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          ALL-TIME EARNINGS
+        </p>
+        <p className="text-lg font-bold text-gray-800">$0.00</p>
+      </div>
     </div>
 
-    <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center">
-      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-        <img src={totalH} alt="total-referrals" className="w-5 h-5" />
+    <div className="bg-gray-50 rounded-lg p-4 flex items-center gap-4">
+      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+        <img src={totalH} alt="total-referrals" className="w-15 h-15" />
       </div>
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-        TOTAL REFERRALS
-      </p>
-      <p className="text-lg font-bold text-gray-800">200</p>
+      <div className="flex flex-col">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          TOTAL REFERRALS
+        </p>
+        <p className="text-lg font-bold text-gray-800">0</p>
+      </div>
     </div>
   </div>
 </div>
@@ -136,8 +153,10 @@ const ReferralDashboard = () => {
               <div className="w-full max-w-[100%] h-[180px] bg-green-50 rounded-lg mx-auto mb-6 flex items-center justify-center border border-green-100 p-4">
                 <img src={connectWallet} alt="Share Your Unique Link" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold text-gray-800 mb-3 text-lg">Share Your Unique Link</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">Copy your referral link and share it with friends via any network.</p>
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3 text-lg">Share Your Unique Link</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">Copy your referral link and share it with friends via any network.</p>
+              </div>
             </div>
 
             {/* Step 3 */}
@@ -145,8 +164,10 @@ const ReferralDashboard = () => {
               <div className="w-full max-w-[100%] h-[180px] bg-green-50 rounded-lg mx-auto mb-6 flex items-center justify-center border border-green-100 p-4">
                 <img src={connectWallet} alt="Earn 5% Instantly" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold text-gray-800 mb-3 text-lg">Earn 5% Instantly</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">Get 5% cashback per referral – paid in crypto or convert to CAPX.</p>
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3 text-lg">Earn 5% Instantly</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">Get 5% cashback per referral – paid in crypto or convert to CAPX.</p>
+              </div>
             </div>
           </div>
         </div>

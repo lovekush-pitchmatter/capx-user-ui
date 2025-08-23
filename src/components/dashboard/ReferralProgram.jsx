@@ -6,7 +6,7 @@ const ReferralProgram = () => {
   const [copied, setCopied] = useState(false);
   
   const handleCopy = () => {
-    navigator.clipboard.writeText("https://capshield.io/username");
+    navigator.clipboard.writeText("https://capshield.io/lovekushtari");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
