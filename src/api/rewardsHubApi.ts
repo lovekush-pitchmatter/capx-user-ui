@@ -1,6 +1,6 @@
 import { axiosInstance } from "../config";
 
-const BASE_URL = "/capx";
+const BASE_URL = "/capx"; 
 
 const rewardsHubApi = {
   // Fetch user rewards
@@ -13,6 +13,19 @@ const rewardsHubApi = {
     const response = await axiosInstance.get(`${BASE_URL}/user-rewards`);
     return response.data;
   },
+
+  fetchUserPoll: async () => {
+    const response = await axiosInstance.get(`${BASE_URL}/poll`);
+    return response.data;
+  },
+
+   submitPoll: async (encryptedData: any) => {
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.post(`${BASE_URL}/poll`, { encryptedData }, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      return res.data;
+    },
 
   // Fetch available surveys
   fetchSurveys: async () => {

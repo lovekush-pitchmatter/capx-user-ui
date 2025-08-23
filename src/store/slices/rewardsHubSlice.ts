@@ -5,21 +5,25 @@ import rewardsHubApi from "../../api/rewardsHubApi";
 interface RewardsHubState {
   userDashboard: any[];
   userRewards: any[];
+  userPoll: any[];
   surveys: any[];
   quizQuestions: any[];
   leaderboard: any[];
   loading: boolean;
   error: string | null;
+  pollSubmit: { loading: boolean; error: string | null; data: any | null };
 }
 
 const initialState: RewardsHubState = {
   userDashboard: [],
   userRewards: [],
+  userPoll: [],
   surveys: [],
   quizQuestions: [],
   leaderboard: [],
   loading: false,
   error: null,
+  pollSubmit: { loading: false, error: null, data: null },
 };
 
 // Async thunks for API calls
@@ -97,6 +101,29 @@ export const fetchLeaderboard = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Failed to fetch leaderboard");
     }
+  } 
+);
+
+export const fetchUserPoll = createAsyncThunk(
+  "rewardsHub/fetchUserPoll",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await rewardsHubApi.fetchUserPoll();
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Failed to fetch user poll");
+    }
+  } 
+);
+
+export const submitPoll = createAsyncThunk(
+  'transaction/submitPoll',
+  async (encryptedData: any, { rejectWithValue }) => {
+    try {
+      const response = await rewardsHubApi.submitPoll(encryptedData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -120,6 +147,33 @@ const rewardsHubSlice = createSlice({
           state.loading = false;
           state.error = action.payload as string;
         })
+
+        .addCase(submitPoll.pending, (state) => {
+          state.pollSubmit.loading = true;
+          state.pollSubmit.error = null;
+        })
+        .addCase(submitPoll.fulfilled, (state, action) => {
+          state.pollSubmit.loading = false;
+          state.pollSubmit.data = action.payload;
+        })
+        .addCase(submitPoll.rejected, (state, action) => {
+          state.pollSubmit.loading = false;
+          state.pollSubmit.error = action.payload as string;
+        })
+
+        .addCase(fetchUserPoll.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchUserPoll.fulfilled, (state, action) => {
+          state.loading = false;
+          state.userPoll = action.payload;
+        })
+        .addCase(fetchUserPoll.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        })
+
       // Fetch user rewards
       .addCase(fetchUserRewards.pending, (state) => {
         state.loading = true;

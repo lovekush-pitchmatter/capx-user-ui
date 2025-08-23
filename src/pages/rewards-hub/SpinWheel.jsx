@@ -19,8 +19,7 @@ const SpinWheel = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [earnedTokens, setEarnedTokens] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false); // New state for confetti visibility
-
+  const [showConfetti, setShowConfetti] = useState(false);
   const handleSpinClick = () => {
     const newPrizeNumber = Math.floor(Math.random() * data.length);
     setPrizeNumber(newPrizeNumber);
@@ -32,12 +31,12 @@ const SpinWheel = () => {
     const prize = data[prizeNumber].option;
     const earned = !["NEXT TIME", "TRY AGAIN"].includes(prize);
     setEarnedTokens(earned);
-    setShowConfetti(earned); // Show confetti only if tokens are earned
+    setShowConfetti(earned);
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setShowConfetti(false); // Hide confetti after modal is closed
+    setShowConfetti(false);
     setModalOpen(false);
   };
 
@@ -70,7 +69,7 @@ const SpinWheel = () => {
       />
       <button
         onClick={handleSpinClick}
-        className="w-16 text-sm p-2 px-5 text-center bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all absolute z-20"
+        className="w-14 text-sm p-2 px-0 text-center bg-[#FF8974] text-white font-bold rounded-full shadow-lg hover:bg-pink-600 transition-all absolute z-20"
       >
         SPIN NOW
       </button>

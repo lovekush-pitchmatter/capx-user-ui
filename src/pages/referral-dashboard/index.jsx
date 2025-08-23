@@ -17,11 +17,7 @@ const ReferralDashboard = () => {
     // You can add a toast notification here
   };
 
-  const withdrawalData = [
-    { id: '01', date: 'Aug 2, 2025', amount: '$125.00', status: 'Completed', token: 'CAPX' },
-    { id: '02', date: 'Jul 28, 2025', amount: '$75.00', status: 'Completed', token: 'USDT' },
-    { id: '03', date: 'Jul 21, 2025', amount: '$40.00', status: 'Pending', token: 'USDC' },
-  ];
+  const withdrawalData = [];
 
   return (
     <Layout>
@@ -87,7 +83,7 @@ const ReferralDashboard = () => {
   </div>
 
   {/* Gradient Button */}
-  <button className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-500 hover:opacity-90 text-white py-3 rounded-lg font-medium transition-all duration-200 mb-6">
+  <button className="w-full bg-gradient-to-r from-[#B500EF] to-[#37009A] hover:opacity-90 text-white py-3 rounded-lg font-medium transition-all duration-200 mb-6">
     Convert to CAPX
   </button>
 
@@ -233,23 +229,31 @@ const ReferralDashboard = () => {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {withdrawalData.map((row, index) => (
-                  <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-4 px-4 text-sm text-gray-800">{row.id}</td>
-                    <td className="py-4 px-4 text-sm text-gray-800">{row.date}</td>
-                    <td className="py-4 px-4 text-sm text-gray-800 font-medium">{row.amount}</td>
-                    <td className="py-4 px-4">
-                      <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${
-                        row.status === 'Completed' 
-                          ? 'bg-green-100 text-green-700' 
-                          : 'bg-orange-100 text-orange-700'
-                      }`}>
-                        {row.status}
-                      </span>
+                {withdrawalData.length > 0 ? (
+                  withdrawalData.map((row, index) => (
+                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-4 px-4 text-sm text-gray-800">{row.id}</td>
+                      <td className="py-4 px-4 text-sm text-gray-800">{row.date}</td>
+                      <td className="py-4 px-4 text-sm text-gray-800 font-medium">{row.amount}</td>
+                      <td className="py-4 px-4">
+                        <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${
+                          row.status === 'Completed' 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-orange-100 text-orange-700'
+                        }`}>
+                          {row.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-sm text-gray-800 font-medium">{row.token}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="py-6 px-4 text-center text-sm text-gray-500">
+                      No withdrawals available.
                     </td>
-                    <td className="py-4 px-4 text-sm text-gray-800 font-medium">{row.token}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

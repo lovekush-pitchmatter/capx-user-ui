@@ -81,7 +81,7 @@ const SurveySection = () => {
                 Next
               </button>
               <button
-                className="w-1/3 bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+                className="w-1/3 bg-gradient-to-r from-[#B500EF] to-[#37009A] text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
                 onClick={() => setQuizModalOpen(true)}
               >
                 Submit
@@ -102,7 +102,7 @@ const SurveySection = () => {
             Test your knowledge. Earn ANGEL.
           </p>
           <button
-            className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
+            className="w-full bg-gradient-to-r from-[#B500EF] to-[#37009A] text-white py-2 rounded-lg font-medium hover:opacity-90 transition"
             onClick={() => setQuizModalOpen(true)}
           >
             Participate Now
