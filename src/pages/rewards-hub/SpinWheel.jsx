@@ -20,6 +20,7 @@ const SpinWheel = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [earnedTokens, setEarnedTokens] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  
   const handleSpinClick = () => {
     const newPrizeNumber = Math.floor(Math.random() * data.length);
     setPrizeNumber(newPrizeNumber);
@@ -50,7 +51,7 @@ const SpinWheel = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-fit relative w-1/3">
+    <div className="flex flex-col items-center justify-center h-fit relative w-full md:w-1/3">
       <Wheel
         mustStartSpinning={mustSpin}
         prizeNumber={prizeNumber}
@@ -61,22 +62,22 @@ const SpinWheel = () => {
         radiusLineColor={["#fff"]}
         radiusLineWidth={2}
         textDistance={60}
-        fontSize={14}
+        fontSize={window.innerWidth < 768 ? 12 : 14}
         spinDuration={0.5}
         startingOptionIndex={0}
-        width={250}
+        width={window.innerWidth < 768 ? 200 : 250}
         onStopSpinning={handleSpinEnd}
       />
       <button
         onClick={handleSpinClick}
-        className="w-14 text-sm p-2 px-0 text-center bg-[#FF8974] text-white font-bold rounded-full shadow-lg hover:bg-pink-600 transition-all absolute z-20"
+        className="w-12 h-12 md:w-14 md:h-14 text-xs md:text-sm p-2 px-0 text-center bg-[#FF8974] text-white font-bold rounded-full shadow-lg hover:bg-pink-600 transition-all absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         SPIN NOW
       </button>
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md text-center relative z-[1010]">
             {earnedTokens && showConfetti && ( // Show confetti only once
               <div className="absolute inset-0 flex items-center justify-center z-[1000] pointer-events-none">
@@ -86,7 +87,7 @@ const SpinWheel = () => {
             <div className="z-[1010]">
               <img src={confettiPopBanner} alt="Confetti Pop Banner" />
             </div>
-            <h2 className="text-2xl font-bold mb-4 z-[1010]">
+            <h2 className="text-xl md:text-2xl font-bold mb-4 z-[1010]">
               {earnedTokens ? "Congratulations!" : "Better Luck Next Time!"}
             </h2>
             <p className="text-sm text-gray-500 mb-4 z-[1010]">

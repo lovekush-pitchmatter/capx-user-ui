@@ -15,7 +15,7 @@ const Poll = ({ poll }) => {
 
   if (!poll) {
     return (
-      <div className="rounded-lg p-8 border shadow-sm w-2/3">
+      <div className="rounded-lg p-6 md:p-8 border shadow-sm w-full md:w-2/3">
         <h3 className="font-semibold text-gray-900 text-lg">Take Polls</h3>
         <p className="text-gray-500 text-sm mb-4">No active poll available.</p>
       </div>
@@ -67,14 +67,14 @@ const Poll = ({ poll }) => {
   };
 
   return (
-    <div className="rounded-lg p-8 border shadow-sm w-2/3">
+    <div className="rounded-lg p-6 md:p-8 border shadow-sm w-full md:w-2/3">
       {/* Title */}
-      <h3 className="font-semibold text-gray-900 text-lg">Take Polls</h3>
+      <h3 className="font-semibold text-gray-900 text-lg md:text-xl">Take Polls</h3>
       <p className="text-gray-500 text-sm mb-4">Answer & Earn AngelSEED</p>
 
       {/* Question */}
       <div>
-        <h3 className="font-medium text-gray-800 mb-3">{poll.question_text}</h3>
+        <h3 className="font-medium text-gray-800 mb-3 text-sm md:text-base">{poll.question_text}</h3>
 
         {/* Options */}
         <div className="space-y-2 flex flex-col gap-3">
@@ -91,7 +91,7 @@ const Poll = ({ poll }) => {
                 onChange={() => setSelectedOption(option)}
                 className="accent-purple-600 w-4 h-4"
               />
-              <span className="text-gray-700">{option}</span>
+              <span className="text-gray-700 text-sm md:text-base">{option}</span>
             </label>
           ))}
         </div>
@@ -100,7 +100,7 @@ const Poll = ({ poll }) => {
         <button
           onClick={handleSubmit}
           disabled={!selectedOption || submitted}
-          className={`mt-6 w-full py-2 rounded-lg text-white font-medium transition ${
+          className={`mt-6 w-full py-2 md:py-3 rounded-lg text-white font-medium transition text-sm md:text-base ${
             !selectedOption || submitted
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-gradient-to-r from-[#B500EF] to-[#37009A] hover:opacity-90"
@@ -110,28 +110,28 @@ const Poll = ({ poll }) => {
         </button>
 
         {/* Participation count */}
-        <p className="text-gray-500 text-sm mt-6">
+        <p className="text-gray-500 text-xs md:text-sm mt-4 md:mt-6">
           {poll.participation_count || 0}+ users participated
         </p>
       </div>
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md text-center relative z-[1010]">
             {showConfetti && (
               <div className="absolute inset-0 flex items-center justify-center z-[1000] pointer-events-none">
                 <Lottie options={confettiOptions} height={300} width={300} />
               </div>
             )}
-            <h2 className="text-2xl font-bold mb-4 z-[1010]">
+            <h2 className="text-xl md:text-2xl font-bold mb-4 z-[1010]">
               Congratulations!
             </h2>
             <p className="text-sm text-gray-500 mb-4 z-[1010]">
               You successfully submitted your answer!
             </p>
             <button
-              className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition z-[1010]"
+              className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white py-2 md:py-3 rounded-lg font-medium hover:opacity-90 transition z-[1010]"
               onClick={handleCloseModal}
             >
               Done

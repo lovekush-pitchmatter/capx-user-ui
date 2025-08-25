@@ -36,9 +36,9 @@ const SurveySection = () => {
         Engage your mind, Earn with ease.
       </p>
 
-      <div className="flex gap-6 h-fit items-stretch">
+      <div className="flex flex-col md:flex-row gap-6 h-fit items-stretch">
         {/* Survey Card */}
-        <div className="bg-white shadow-md rounded-lg p-6 w-2/3 flex flex-col justify-between" style={{ boxShadow: "0 2px 2px rgba(0,0,0,0.1), 0 -2px 2px rgba(0,0,0,0.1)" }}>
+        <div className="bg-white shadow-md rounded-lg p-6 w-full md:w-2/3 flex flex-col justify-between" style={{ boxShadow: "0 2px 2px rgba(0,0,0,0.1), 0 -2px 2px rgba(0,0,0,0.1)" }}>
           <div>
             <h2 className="text-lg font-semibold mb-1">Survey for Deal Flow</h2>
             <p className="text-sm text-gray-500 mb-4">
@@ -91,7 +91,7 @@ const SurveySection = () => {
         </div>
 
         {/* Side Card */}
-        <div className="bg-gray-100 shadow-md rounded-lg p-6 w-1/3 text-center flex flex-col justify-center">
+        <div className="bg-gray-100 shadow-md rounded-lg p-6 w-full md:w-1/3 text-center flex flex-col justify-center">
           <div className="flex justify-center mb-3">
             <div className="flex items-center justify-center">
               <img src={quiz} alt="Quiz Quest" className="w-18" />
