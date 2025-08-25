@@ -41,9 +41,9 @@ const AngelSeedReward = () => {
           <p className="text-gray-500 text-sm mb-4 text-center">
             Both lead to earning AngelSEED rewards...
           </p>
-          <div className="flex gap-5">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-6 p-4">
             <SpinWheel />
-            <Poll poll={pollData}/>
+            <Poll poll={pollData} />
           </div>
         </div>
         <PollResults answers={pollAnswers} />
