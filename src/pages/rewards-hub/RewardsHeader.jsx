@@ -14,7 +14,7 @@ const RewardsHeader = () => {
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-3">
           AngelSEED Rewards Hub
         </h1>
-        <p className="text-xl text-gray-600 text-center font-semibold">
+        <p className="text-xl text-black-600 text-center font-semibold">
           Earn free tokens by engaging in polls, surveys, games, spins, quizzes & project <br /> airdrops — all in one place.
         </p>
       </div>

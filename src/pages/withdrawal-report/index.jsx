@@ -6,49 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // Mock data for demonstration
-const mockWithdrawals = [
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "2345643219",
-    details: "USDT (TRC20)\nAddress: TUbch1cZy9sJvL2gCXAuY9wqfzpUTj71pi",
-    amount: 200.0,
-    currency: "BTC",
-    status: "Confirmed",
-  },
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "2345643219",
-    details: "USDT (TRC20)\nAddress: TUbch1cZy9sJvL2gCXAuY9wqfzpUTj71pi",
-    amount: 200.0,
-    currency: "USD",
-    status: "Confirmed",
-  },
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "2345643219",
-    details: "USDT (TRC20)\nAddress: TUbch1cZy9sJvL2gCXAuY9wqfzpUTj71pi",
-    amount: 200.0,
-    currency: "BTC",
-    status: "Pending",
-  },
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "2345643219",
-    details: "USDT (TRC20)\nAddress: TUbch1cZy9sJvL2gCXAuY9wqfzpUTj71pi",
-    amount: 200.0,
-    currency: "USD",
-    status: "Cancelled",
-  },
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "2345643219",
-    details: "USDT (TRC20)\nAddress: TUbch1cZy9sJvL2gCXAuY9wqfzpUTj71pi",
-    amount: 200.0,
-    currency: "BTC",
-    status: "Rejected",
-  },
-  // ... more rows as needed
-];
+const mockWithdrawals = [];
 
 const statuses = ["Confirmed", "Pending", "Cancelled", "Rejected"];
 
@@ -173,8 +131,8 @@ const WithdrawalReport = () => {
       : "Select Date Range";
 
   return (
-    <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+    <Layout menu_one="Reports" menu_two="Withdrawal Report">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full px-2 sm:px-4 py-6 overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Withdrawal Report
         </h2>

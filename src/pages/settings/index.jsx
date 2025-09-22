@@ -138,7 +138,7 @@ const Settings = () => {
   };
 
   return (
-    <Layout>
+    <Layout menu_one="Settings" menu_two="Settings">
       <div className="min-h-screen max-w-4xl mx-auto w-full rounded-xl sm:px-4 px-2 sm:py-6 py-4">
         {/* Profile Card */}
         <div className="bg-white dark:bg-zinc-800 dark:text-white shadow-md rounded-t-xl py-6 px-10 flex max-md:flex-col lg:gap-10 md:gap-8 sm:gap-6 gap-2 md:items-start items-start justify-start">

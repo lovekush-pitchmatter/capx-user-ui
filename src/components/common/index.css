@@ -1,0 +1,9 @@
+/* Hide the Google top frame bar */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* Prevent page shift */
+body {
+  top: 0px !important;
+}

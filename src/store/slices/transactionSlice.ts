@@ -27,6 +27,7 @@ interface TransactionState {
   transferAmount: any[] | null;
   balanceDetails: any[] | null;
   sendTransferOtp: ReportState;
+  withdrawTxnId: string | null;
 }
 
 const initialState: TransactionState = {
@@ -49,6 +50,7 @@ const initialState: TransactionState = {
   transferAmount: [],
   balanceDetails: [],
   sendTransferOtp: { loading: false, error: null, data: null },
+  withdrawTxnId: null,
 };
 
 export const getTokenPlanThunk = createAsyncThunk(
@@ -231,6 +233,7 @@ export const transferAmount = createAsyncThunk(
   }
 );
 
+//send transfer otp
 export const sendTransferOtpThunk = createAsyncThunk(
   'transaction/sendTransferOtp',
   async (_, { rejectWithValue }) => {
@@ -243,6 +246,44 @@ export const sendTransferOtpThunk = createAsyncThunk(
   }
 );
 
+//send crypto withdraw otp
+export const sendCryptoWithdrawOtpThunk = createAsyncThunk(
+  'transaction/sendCryptoWithdrawOtp',
+  async (encryptedData: any, { rejectWithValue }) => {
+    try {
+      const response = await transactionApi.sendCryptoWithdrawOtp(encryptedData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+//create crypto withdraw order
+export const processCryptoWithdraw = createAsyncThunk(
+  'transaction/processCryptoWithdraw',
+  async (encryptedData: any, { rejectWithValue }) => {
+    try {
+      const response = await transactionApi.processCryptoWithdraw(encryptedData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+//confirm crypto withdraw order
+export const confirmCryptoWithdraw = createAsyncThunk(
+  'transaction/confirmCryptoWithdraw',
+  async (encryptedData: any, { rejectWithValue }) => {
+    try {
+      const response = await transactionApi.confirmCryptoWithdraw(encryptedData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const transactionSlice = createSlice({
   name: 'transaction',
@@ -460,6 +501,45 @@ const transactionSlice = createSlice({
         state.error = action.payload as string;
         state.balanceDetails = [];
       })
+
+      .addCase(sendCryptoWithdrawOtpThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendCryptoWithdrawOtpThunk.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(sendCryptoWithdrawOtpThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(processCryptoWithdraw.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(processCryptoWithdraw.fulfilled, (state, action) => {
+        state.loading = false;
+        state.withdrawTxnId = action.payload.reqid
+      })
+      .addCase(processCryptoWithdraw.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(confirmCryptoWithdraw.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(confirmCryptoWithdraw.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(confirmCryptoWithdraw.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+
       .addCase(sendTransferOtpThunk.pending, (state) => {
         state.sendTransferOtp.loading = true;
         state.sendTransferOtp.error = null;

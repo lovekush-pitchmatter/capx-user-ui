@@ -132,7 +132,7 @@ const Transfer = () => {
   };
 
   return (
-    <Layout>
+    <Layout menu_one="Wallet" menu_two="Transfer">
       <div className="flex flex-col items-center justify-center p-6 font-sans">
         <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
           <h2 className="text-2xl mb-6 text-black-800 text-center">Transfer Funds to</h2>

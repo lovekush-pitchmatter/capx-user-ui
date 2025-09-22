@@ -42,6 +42,10 @@ const profileApi = {
     const response = await axiosInstance.get("/profile/links");
     return response.data;
   },
+  walletBalance: async () => {
+    const response = await axiosInstance.get("/user/balance");
+    return response.data;
+  },
 };
 
 export default profileApi;

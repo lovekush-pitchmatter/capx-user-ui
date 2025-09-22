@@ -1,21 +1,62 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CapShield | Home</title>
-    <style> 
-      html, body, #root {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body class="bg-gray-400 p-0 m-0">
-    <div id="root" class="p-0">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CapShield | Home</title>
+  <script src="//code.tidio.co/ashza33kj17eb5lu3swqboea42kgdpxz.js" async></script>
+  <style>
+    html,
+    body,
+    #root {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Hide the Google top frame bar */
+    .goog-te-banner-frame.skiptranslate {
+      display: none !important;
+    }
+
+    /* Prevent page shift */
+    body {
+      top: 0px !important;
+    }
+
+    /* Hide Google logo (optional, but be careful about terms of use) */
+    .goog-logo-link {
+      display: none !important;
+    }
+
+    /* Hide the "Powered by Google Translate" text */
+    .goog-te-gadget span {
+      display: none !important;
+    }
+
+    /* Style the dropdown */
+    .goog-te-combo {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      background: #fff;
+      cursor: pointer;
+    }
+      .skiptranslate {
+    display: none!important;
+}
+  </style>
+</head>
+
+<body class="bg-gray-400 p-0 m-0">
+  <div id="root" class="p-0">
     <script type="module" src="/src/main.jsx"></script>
-  </body>
+</body>
+
 </html>

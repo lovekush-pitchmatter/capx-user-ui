@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
+import "../../global.css";
 import { MdEdit } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePicture } from "../../store/slices/profileSlice";
 import defaultImg from "../../assets/images/user_default.png";
 import { logout } from "../../store/slices/authSlice";
+import { Link } from 'react-router-dom';
 
 //icon-images
 import Polls from "../../assets/dashboard/polls.png";
@@ -64,7 +66,7 @@ const UserProfile = ({ user, dashboard }) => {
     <div className="w-full bg-white dark:bg-zinc-900 rounded-xl p-4 sm:p-5">
       <div className="grid grid-cols-1 md:grid-cols-[auto,1fr,auto] items-center gap-4 sm:gap-6">
         {/* Left: Avatar + name + id */}
-        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full md:w-auto">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full md:w-auto" style={{ zIndex: 1 }}>
           <div className="relative">
             <img
               src={user?.profile_image || defaultImg}
@@ -98,7 +100,7 @@ const UserProfile = ({ user, dashboard }) => {
             )}
           </div>
           {/* Logout button for mobile inside left section */}
-          <div className="md:hidden">
+          <div className="md:hidden" style={{ zIndex: 100 }}>
             <button
               onClick={handleLogout}
               type="button"
@@ -112,41 +114,34 @@ const UserProfile = ({ user, dashboard }) => {
 
         {/* Middle: icons row + description */}
         <div className="flex flex-col gap-2 sm:gap-3">
-          <div className="flex items-center justify-evenly flex-wrap gap-3 sm:gap-4">
-            <div className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0">
-              <img src={Polls} alt="Polls" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain" />
-              <span>Polls</span>
-            </div>
-            <div className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0">
-              <img src={Spins} alt="Spins" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain" />
-              <span>Spins</span>
-            </div>
-            <div className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0">
-              <img src={Games} alt="Games" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain" />
-              <span>Games</span>
-            </div>
-            <div className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0">
-              <img src={Surveys} alt="Surveys" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain" />
-              <span>Surveys</span>
-            </div>
-            <div className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0">
-              <img src={Quiz} alt="Quizzes" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain" />
-              <span>Quizzes</span>
-            </div>
+          <div className="flex items-center justify-evenly flex-wrap gap-3 sm:gap-4" style={{ zIndex: 1 }}>
+            <Link to="/angelseed/reward" className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0 cursor-pointer hover:cursor-pointer">
+              <img src={Polls} alt="Polls" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain animate-bounce-pop" />
+              <span style={{ fontWeight: "bold", fontSize: 16 }}>Polls</span>
+            </Link>
+            <Link to="/angelseed/reward" className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0 cursor-pointer hover:cursor-pointer">
+              <img src={Spins} alt="Spins" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain animate-bounce-pop" />
+              <span style={{ fontWeight: "bold", fontSize: 16 }}>Spins</span>
+            </Link>
+            <Link to="/angelseed/reward" className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0 cursor-pointer hover:cursor-pointer">
+              <img src={Games} alt="Games" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain animate-bounce-pop" />
+              <span style={{ fontWeight: "bold", fontSize: 16 }}>Games</span>
+            </Link>
+            <Link to="/angelseed/reward" className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0 cursor-pointer hover:cursor-pointer">
+              <img src={Surveys} alt="Surveys" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain animate-bounce-pop" />
+              <span style={{ fontWeight: "bold", fontSize: 16 }}>Surveys</span>
+            </Link>
+            <Link to="/angelseed/reward" className="flex flex-col items-center text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs shrink-0 cursor-pointer hover:cursor-pointer">
+              <img src={Quiz} alt="Quizzes" className="w-8 h-8 sm:w-9 sm:h-9 mb-1 object-contain animate-bounce-pop" />
+              <span style={{ fontWeight: "bold", fontSize: 16 }}>Quizzes</span>
+            </Link>
           </div>
-          <p className="text-[11px] sm:text-xs text-gray-600 dark:text-gray-300 text-center">
-            <span className="text-violet-600 font-semibold">Earn ANGEL Coins</span> — Polls, tasks & surveys that pave your way to becoming an Angel Investor
+          <p className="text-[16px] sm:text-md text-black-600 dark:text-black-300 text-center">
+            <span className="text-violet-600 font-bold">Earn ANGEL Coins</span> — Polls, tasks & surveys that pave your way to becoming an Angel Investor
           </p>
         </div>
 
         {/* Right: Logout for desktop */}
-        <button
-          type="button"
-          className="hidden md:flex flex-col items-center text-gray-700 dark:text-gray-200 text-xs sm:text-sm hover:opacity-90 justify-self-end"
-        >
-          <img src={LogoutIcon} alt="Logout" className="w-5 h-5 mb-1" />
-          <span>Logout</span>
-        </button>
       </div>
     </div>
   );

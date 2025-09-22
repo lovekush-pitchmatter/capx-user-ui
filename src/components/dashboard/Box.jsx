@@ -24,7 +24,7 @@ const Box = ({ user = {}, dashboard = {} }) => {
     {
       key: "invested",
       title: "INVESTED",
-      value: currency(dashboard?.investedAmount ?? user?.wallet_amount ?? 0),
+      value: currency(dashboard?.investedAmount ?? 0),
       unit: "USD",
       icon: <img src={INVESTED} alt="Invested-icon" className="w-8 h-8" />,
     },
@@ -38,7 +38,7 @@ const Box = ({ user = {}, dashboard = {} }) => {
     {
       key: "capxWorth",
       title: "CURRENT CAPX WORTH",
-      value: currency(dashboard?.totalAssets ?? 0),
+      value: currency(dashboard?.currentCapxWorth ?? 0),
       unit: "USD",
       icon: <img src={CURRCAPXICON} alt="Curr-Capx-icon" className="w-8 h-8" />,
     },

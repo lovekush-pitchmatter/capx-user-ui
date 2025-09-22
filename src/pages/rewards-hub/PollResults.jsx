@@ -1,5 +1,5 @@
 const PollResults = ({ answers }) => {
-  if (!answers || Object.keys(answers).length === 0) {
+  if (!answers || !Array.isArray(answers) || answers.length === 0) {
     return (
       <div className="border rounded-lg p-4">
         <h3 className="text-lg font-semibold mb-2">Live Results</h3>
@@ -9,14 +9,17 @@ const PollResults = ({ answers }) => {
     );
   }
 
-  const totalVotes = Object.values(answers).reduce((sum, count) => sum + count, 0);
+  // Calculate total votes from array format
+  const totalVotes = answers.reduce((sum, item) => sum + (item.total_answer_by_user || 0), 0);
 
   return (
     <div className="border rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-2">Live Results</h3>
       <div className="w-full h-[1px] bg-gray-200 mb-4"></div>
       <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-        {Object.entries(answers).map(([label, count], index) => {
+        {answers.map((item, index) => {
+          const label = item.answer;
+          const count = item.total_answer_by_user || 0;
           const percent = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
           return (
             <div key={index}>

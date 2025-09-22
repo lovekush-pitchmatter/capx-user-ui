@@ -110,7 +110,7 @@ const transactionApi = {
   },
   verifyUsername: async (username: string) => {
     const token = localStorage.getItem("token");
-    const res = await axiosInstance.post("/verify/username", username, {
+    const res = await axiosInstance.post("/verify/username", { username }, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     return res.data;
@@ -122,6 +122,29 @@ const transactionApi = {
     });
     return res.data;
   },
+
+  sendCryptoWithdrawOtp: async (encryptedData: any) => {
+    const token = localStorage.getItem("token");
+    const res = await axiosInstance.post("/wallet/send/otp", { encryptedData }, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    return res.data;
+  },
+  processCryptoWithdraw: async (encryptedData: any) => {
+    const token = localStorage.getItem("token");
+    const res = await axiosInstance.post("/wallet/process/withdraw", { encryptedData }, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    return res.data;
+  },
+  confirmCryptoWithdraw: async (encryptedData: any) => {
+    const token = localStorage.getItem("token");
+    const res = await axiosInstance.post("/wallet/confirm/withdraw", { encryptedData }, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    return res.data;
+  },
+
 }
 
 export default transactionApi;

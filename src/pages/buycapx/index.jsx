@@ -71,7 +71,7 @@ const BuyCapX = () => {
   const currentTab = tabs.find((tab) => tab.key === activeTab);
 
   return (
-    <Layout>
+     <Layout menu_one={"Crypto"} menu_two={"Buy Crypto"}>
       <div className="md:p-6 p-2 my-6 w-full">
         <h1 className="text-xl sm:text-2xl md:text-4xl dark:text-white font-semibold mb-6">
           Buy / Stake Crypto

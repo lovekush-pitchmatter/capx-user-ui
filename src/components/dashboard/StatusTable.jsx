@@ -4,33 +4,38 @@ import CurrAngelWorth from "../../assets/dashboard/worth.png";
 import NOfRef from "../../assets/dashboard/referral.png";
 import Investors from "../../assets/dashboard/investors.png";
 
-const StatsCards = ({ angelBalance, angelWorth, referrals, activeInvestors }) => {
+const StatsCards = ({ dashboard = {} }) => {
+  const formatCurrency = (val) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? "$0.00" : `$${num.toFixed(4)}`;
+  };
+
   const statsData = [
     {
       id: 1,
-      title: "ANGEL BALANCE",
-      value: angelBalance || "0",
+      title: "CURRENT ANGEL BALANCE",
+      value: dashboard?.currentAngelTokens || "0",
       bgColor: "bg-red-100",
       icon: AngelBal
     },
     {
       id: 2,
       title: "CURRENT ANGEL WORTH",
-      value: angelWorth || "$0.00",
+      value: formatCurrency(dashboard?.currentAngelWorth),
       bgColor: "bg-green-100",
       icon: CurrAngelWorth
     },
     {
       id: 3,
       title: "NO. OF REFERRALS",
-      value: referrals || "0",
+      value: dashboard?.totalNumberOfReferral || "0",
       bgColor: "bg-purple-100",
       icon: NOfRef
     },
     {
       id: 4,
       title: "ACTIVE INVESTORS",
-      value: activeInvestors || "0",
+      value: dashboard?.activeInvestors || "0",
       bgColor: "bg-yellow-100",
       icon: Investors
     }

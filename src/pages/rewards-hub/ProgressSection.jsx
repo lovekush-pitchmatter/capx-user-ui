@@ -3,18 +3,13 @@ import { useState } from "react";
 import dailyEarned from "../../assets/images/earned.png";
 import currentWeek from "../../assets/images/week.png";
 
-const ProgressSection = () => {
+import first from "../../assets/rewards/first.png";
+import second from "../../assets/rewards/second.png";
+import third from "../../assets/rewards/third.png";
+
+const ProgressSection = ({ hubData, leaderBoard }) => {
   const [activeTab, setActiveTab] = useState("daily");
-
-  const achieversData = {
-      daily: [
-        { rank: 1, name: "lovekushdemo", amount: "10", icon: "🥇" },
-      ],
-      allTime: [
-        { rank: 1, name: "lovekushdemo", amount: "10", icon: "🥇" },
-      ],
-    };
-
+ 
   return (
     <div className="">
       <h2 className="text-center text-2xl font-bold mb-6">Your Progress</h2>
@@ -26,8 +21,8 @@ const ProgressSection = () => {
           <div className="">
             <img src={dailyEarned} alt="Daily Earned" className="w-15 h-15" />
           </div>
-          <p className="text-gray-600 font-semibold mt-2">Total Earned</p>
-          <h3 className="text-2xl font-bold">0.00</h3>
+          <p className="text-gray-600 font-semibold mt-2">Total Earned (Lifetime)</p>
+          <h3 className="text-2xl font-bold">{hubData?.data?.totalAngelSeedTokens || 0}</h3>
           <span className="text-sm text-gray-500">ANGEL</span>
         </div>
 
@@ -37,8 +32,8 @@ const ProgressSection = () => {
             <img src={currentWeek} alt="Current Week" className="w-15 h-15" />
           </div>
           <p className="text-gray-600 mt-2 font-semibold">This Week</p>
-          <h3 className="text-2xl font-bold">0 tasks</h3>
-          <span className="text-sm text-gray-500">+0.00 ANGEL</span>
+          <h3 className="text-2xl font-bold">{hubData?.data?.totalThisWeek?.totalCount || 0} tasks</h3>
+          <span className="text-sm text-gray-500">+{hubData?.data?.totalThisWeek?.totalTokenAmount || 0} ANGEL</span>
         </div>
 
         {/* Top Achievers */}
@@ -69,22 +64,31 @@ const ProgressSection = () => {
             </div>
           </div>
 
-            <ul className="space-y-5">
-              {achieversData[activeTab].map((a) => (
-                <li
-                  key={a.rank}
-                  className="flex justify-between items-center text-sm"
-                >
-                  <span>
-                    {a.icon} {a.name}
-                  </span>
-                  <span className="text-gray-600">
-                    {a.amount} <span className="text-purple-600">ANGEL</span>
-                  </span>
-                </li>
-              ))}
-            </ul>        
-          </div>
+          <ul>
+            {leaderBoard?.data?.map((a, index) => (
+              <li
+                key={a.index}
+                className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0"
+              >
+                <span className="flex items-center gap-2">
+                  {a.rank === 1 ? (
+                    <span className="text-xl">🥇</span>
+                  ) : a.rank === 2 ? (
+                    <span className="text-xl">🥈</span>
+                  ) : a.rank === 3 ? (
+                    <span className="text-xl">🥉</span>
+                  ) : (
+                    <span className="font-semibold text-gray-600">#{a.rank}</span>
+                  )}
+                  <span className="font-semibold text-gray-900">{a.username}</span>
+                </span>
+                <span className="font-semibold text-purple-600">
+                  {parseFloat(a.total_angel_seed_earned).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })} ANGEL
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>  
   )

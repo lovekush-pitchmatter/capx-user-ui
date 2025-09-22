@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Copy, Check, Smartphone, Users, DollarSign } from "lucide-react";
 import USDTicon from "../../assets/dashboard/USDT.png";
+import { Link } from "react-router-dom";
  
-const ReferralProgram = () => {
+const ReferralProgram = ({ user }) => {
   const [copied, setCopied] = useState(false);
   
   const handleCopy = () => {
-    navigator.clipboard.writeText("https://capshield.io/lovekushtari");
+    navigator.clipboard.writeText(`https://capshield.io/${user.referral_id}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }; 
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 w-full max-w-4xl">
@@ -22,7 +23,7 @@ const ReferralProgram = () => {
           <input
             type="text"
             readOnly
-            value="https://capshield.io/amansinghal20"
+            value={`https://capshield.io/${user.referral_id}`}
             className="flex-1 px-4 py-3 text-gray-700 bg-white focus:outline-none"
           />
           <button 
@@ -44,9 +45,9 @@ const ReferralProgram = () => {
             <p className="text-gray-600 mb-4 leading-relaxed">
               Share your unique link and earn 5% rewards on every purchase made through it. Invite friends—earn together!
             </p>
-            <button className="px-6 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors duration-200">
+            <Link to="/referral/dashboard" className="px-6 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors duration-200">
               How it works
-            </button>
+            </Link>
           </div>
 
           {/* Right Image Placeholder */}

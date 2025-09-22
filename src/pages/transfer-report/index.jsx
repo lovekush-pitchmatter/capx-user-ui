@@ -5,29 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // Mock data for demonstration
-const mockTransfers = [
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "AGYGV634768",
-    username: "Abhiram",
-    type: "Credit",
-    currency: "BTC",
-    amount: 200.0,
-    details: "Transferred to akshaymv",
-    status: "Confirmed",
-  },
-  {
-    joiningDate: "27-Jul-2024 14:14:29",
-    transactionId: "AGYGV634768",
-    username: "Abhiram",
-    type: "Credit",
-    currency: "BTC",
-    amount: 200.0,
-    details: "Transferred to shiva",
-    status: "Confirmed",
-  },
-  // ... more rows as needed
-];
+const mockTransfers = [];
 
 const statuses = ["Confirmed", "Pending", "Failed"];
 
@@ -78,8 +56,8 @@ const TransferReport = () => {
       : "Select Date Range";
 
   return (
-    <Layout>
-      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
+    <Layout menu_one="Reports" menu_two="Transfer Report">
+      <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full px-2 sm:px-4 py-6 overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Transfer Report
         </h2>

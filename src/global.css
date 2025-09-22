@@ -1,3 +1,14 @@
+@keyframes bounce-pop {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-6px); }
+  40% { transform: translateY(0); }
+  60% { transform: translateY(-4px); }
+  80% { transform: translateY(0); }
+}
+
+.animate-bounce-pop {
+  animation: bounce-pop 8s cubic-bezier(.68,-0.55,.27,1.55) infinite;
+}
 @keyframes fade-in {
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
@@ -6,3 +17,111 @@
   .animate-fade-in {
     animation: fade-in 0.4s ease-out;
   }
+
+  .skiptranslate {
+    display: none!important;
+}
+
+.top-nav-links:hover {
+  cursor: pointer;
+}
+
+.dashboard-section-buy-capx{
+  z-index: 100!important;
+}
+
+/* Custom Crypto Dropdown Styles */
+.crypto-dropdown {
+  position: relative;
+  user-select: none;
+}
+
+.crypto-dropdown-header {
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.crypto-dropdown-header:hover {
+  background: #edf2f7;
+}
+
+.crypto-dropdown-header-selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crypto-dropdown-header-selected img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.crypto-dropdown-body {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.crypto-dropdown-body.open {
+  max-height: 300px;
+  opacity: 1;
+}
+
+.crypto-dropdown-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.crypto-dropdown-item:hover {
+  background: #f7fafc;
+}
+
+.crypto-dropdown-item img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.crypto-dropdown-item.selected {
+  background: #ebf8ff;
+}
+
+.trophy-img{
+  height: 20px;
+  width: 20px;
+}
+.capx-box{
+  height: 60px;
+  width: 60px;
+}
+
+@media (max-width: 720px) {
+  .countryName {
+   width: 60px;
+  }
+  button.flex.items-center.p-2.border.rounded.w-40.justify-between {
+    width: 45px;
+  }
+}

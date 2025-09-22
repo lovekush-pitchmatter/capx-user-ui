@@ -70,7 +70,7 @@ const WalletBalance = () => {
   );
 
   return (
-    <Layout>
+    <Layout menu_one={"Wallet"} menu_two={"Balance"}>
       <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Wallet Balance

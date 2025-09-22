@@ -136,7 +136,7 @@ const EarningsReport = () => {
       : "Select Date Range";
 
   return (
-    <Layout>
+    <Layout menu_one="Reports" menu_two="Earnings Report">
       <div className="bg-white dark:bg-zinc-900 mx-auto rounded-xl w-full max-w-5xl px-2 sm:px-4 py-6 overflow-hidden">
         <h2 className="text-2xl text-start dark:text-white font-semibold mb-6">
           Earnings Report

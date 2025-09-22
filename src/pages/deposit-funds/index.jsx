@@ -189,7 +189,7 @@ const DepositFunds = () => {
   };
 
   return (
-    <Layout>
+    <Layout menu_one="Wallet" menu_two="Deposit Funds">
       <h2 className="text-2xl font-bold ml-8 mb-4 dark:text-white">Deposit Funds</h2>
       <div className="w-full min-h-[80vh] flex flex-col items-center justify-center p-10 rounded-3xl">
         {formErrors.capxError && (

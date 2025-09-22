@@ -15,11 +15,11 @@ import TaskCompletePage from "./pages/task-complete";
 // Protected Pages
 import Dashboard from "./pages/dashboard";
 import BuyCapX from "./pages/buycapx";
+import StakeCapX from "./pages/staking";
 import DepositHistory from "./pages/deposit-history";
 import TokenHistory from "./pages/token-purchase-history";
 import Withdraw from "./pages/withdraw";
 import Transfer from "./pages/transfer";
-import Conversion from "./pages/conversion";
 import ReferralReport from "./pages/referral-report";
 import DepositFunds from "./pages/deposit-funds";
 import SuccessDeposit from "./pages/deposit-funds/success";
@@ -38,7 +38,6 @@ import StakingReport from "./pages/staking-report";
 import PaymentSuccess from "./pages/status/success";
 import PaymentFailed from "./pages/status/failed";
 import Balance from "./pages/balance";
-import CapxDashboard from "./pages/capxdashboard";
 import AngelSeedReward from "./pages/rewards-hub";
 import ReferralDashboard from "./pages/referral-dashboard";
 
@@ -72,14 +71,13 @@ function App() {
               <Route path="/token-purchase-history" element={<TokenHistory />} />
               <Route path="/withdraw" element={<Withdraw />} />
               <Route path="/transfer" element={<Transfer />} />
-              <Route path="/conversion" element={<Conversion />} />
               <Route path="/referral-report" element={<ReferralReport />} />
               <Route path="/transaction-report" element={<TransactionReport />} />
               <Route path="/earnings-report" element={<EarningsReport />} />
               <Route path="/stake-earning-report" element={<StakeEarningReport />} />
               <Route path="/transfer-report" element={<TransferReport />} />
               <Route path="/withdrawal-report" element={<WithdrawalReport />} />
-              <Route path="/conversions-report" element={<ConversionsReport />} />
+              <Route path="/conversion-report" element={<ConversionsReport />} />
               <Route path="/deposit-history-report" element={<DepositHistoryReport />} />
               <Route path="/staking-report" element={<StakingReport />} />
               <Route path="/deposit-funds" element={<DepositFunds />} />
@@ -87,11 +85,12 @@ function App() {
               <Route path="/deposit-success" element={<SuccessDeposit />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/support" element={<Support />} />
-              <Route path="/capxdashboard" element={<CapxDashboard />} />
-              <Route path="/angelseedreward" element={<AngelSeedReward />} />
+              <Route path="/staking" element={<StakeCapX />} />
+              {/* <Route path="/capxdashboard" element={<CapxDashboard />} /> */}
+              <Route path="/angelseed/reward" element={<AngelSeedReward />} />
               <Route path="/referral/dashboard" element={<ReferralDashboard />} />
             </Route>
-
+ 
 
             {/* Catch-all route for 404 - must be last */}
             <Route path="*" element={<NotFoundPage />} />

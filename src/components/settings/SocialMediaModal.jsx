@@ -32,7 +32,7 @@ const socialMediaPlatforms = [
 
 const SocialMediaModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const { socialMediaLinks, socialLinksLoading, updateError } = useSelector((state) => state.profile);
+  const { socialMediaLinks, socialLinksLoading, socialError } = useSelector((state) => state.profile);
   
   const [links, setLinks] = useState({
     instagram: "",
@@ -131,9 +131,9 @@ const SocialMediaModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {updateError && (
+        {socialError && (
           <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-md text-sm">
-            {updateError}
+            {socialError}
           </div>
         )}
 

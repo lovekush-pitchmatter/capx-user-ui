@@ -25,7 +25,7 @@ const RankingProgress = () => {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div
-            className="bg-gradient-to-r from-purple-500 to-blue-500 h-2.5 rounded-full"
+            className="bg-gradient-to-r from-purple-300 to-blue-300 h-2.5 rounded-full"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
           ></div>
         </div>

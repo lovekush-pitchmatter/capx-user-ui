@@ -7,6 +7,8 @@ interface ProfileState {
   updateError: string | null;
   socialMediaLinks: any[];
   socialLinksLoading: boolean;
+  userWalletBalance?: any;
+  socialError?: string | null;
 }
 
 const initialState: ProfileState = {
@@ -15,6 +17,8 @@ const initialState: ProfileState = {
   updateError: null,
   socialMediaLinks: [],
   socialLinksLoading: false,
+  userWalletBalance: {},
+  socialError: null,
 };
 
 export const updateProfilePicture = createAsyncThunk(
@@ -47,7 +51,7 @@ export const updatePassword = createAsyncThunk(
     try {
       const response = await profileApi.updatePassword(encryptedData);
       return response;
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to update password");
     }
   }
@@ -59,7 +63,7 @@ export const deleteAccount = createAsyncThunk(
     try {
       const response = await profileApi.deleteAccount(encryptedData);
       return response;
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to delete account");
     }
   }
@@ -121,6 +125,18 @@ export const getProfileLinks = createAsyncThunk(
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to get profile links");
+    }
+  }
+);
+
+export const walletBalance = createAsyncThunk(
+  "profile/walletBalance",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await profileApi.walletBalance();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to get wallet balance");
     }
   }
 );
@@ -199,17 +215,28 @@ const profileSlice = createSlice({
       })
       .addCase(saveProfileLinks.pending, (state) => {
         state.socialLinksLoading = true;
-        state.updateError = null;
+        state.socialError = null;
       })
       .addCase(saveProfileLinks.fulfilled, (state, action) => {
         state.socialLinksLoading = false;
         state.socialMediaLinks = action.payload.data || [];
-        state.updateError = null;
+        state.socialError = null;
       })
       .addCase(saveProfileLinks.rejected, (state, action) => {
         state.socialLinksLoading = false;
-        state.updateError = action.payload as string || "Failed to save profile links";
+        state.socialError = action.payload as string || "Failed to save profile links";
       })
+
+      .addCase(walletBalance.pending, (state) => {
+        state.userWalletBalance = {};
+      })
+      .addCase(walletBalance.fulfilled, (state, action) => {
+        state.userWalletBalance = action.payload.data || {};
+      })
+      .addCase(walletBalance.rejected, (state, action) => {
+        state.updateError = action.payload as string || "Failed to get wallet balance";
+      })
+
       .addCase(getProfileLinks.pending, (state) => {
         state.socialLinksLoading = true;
       })
@@ -219,7 +246,7 @@ const profileSlice = createSlice({
       })
       .addCase(getProfileLinks.rejected, (state, action) => {
         state.socialLinksLoading = false;
-        state.updateError = action.payload as string || "Failed to get profile links";
+        state.socialError = action.payload as string || "Failed to get profile links";
       });
   },
 });
