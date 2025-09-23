@@ -202,8 +202,8 @@ export const fetchQuizQuestions = createAsyncThunk(
   }
 );
 
-export const submitQuizAnswers = createAsyncThunk(
-  "rewardsHub/submitQuizAnswers",
+export const submitQuizAnswer = createAsyncThunk(
+  "rewardsHub/submitQuizAnswer",
   async (encryptedData: any, { rejectWithValue }) => {
     try {
       return await rewardsHubApi.submitQuizAnswers(encryptedData);
@@ -478,14 +478,14 @@ const rewardsHubSlice = createSlice({
       })
 
       // Submit quiz answers
-      .addCase(submitQuizAnswers.pending, (state) => {
+      .addCase(submitQuizAnswer.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(submitQuizAnswers.fulfilled, (state) => {
+      .addCase(submitQuizAnswer.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(submitQuizAnswers.rejected, (state, action) => {
+      .addCase(submitQuizAnswer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

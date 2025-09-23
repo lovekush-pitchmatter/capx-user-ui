@@ -179,6 +179,7 @@ const AngelSeedReward = () => {
             surveys={surveys}
             onSurveyComplete={() => dispatch(fetchSurveys())}
             onSpinComplete={refreshSpinWheelData}
+            onQuizComplete={() => dispatch(fetchQuizQuestions())}
           />
         ) : (
           <div className="text-center p-4 bg-gray-50 rounded-lg">

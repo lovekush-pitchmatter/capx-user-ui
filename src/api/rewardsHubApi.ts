@@ -2,6 +2,7 @@ import { axiosInstance } from "../config";
 
 const BASE_URL = "/capx"; 
 
+
 const rewardsHubApi = {
   // Fetch user rewards
   getDashboard: async () => {

@@ -30,7 +30,7 @@ const RankingProgress = () => {
           ></div>
         </div>
         <p className="text-center text-sm text-gray-600 mt-2">
-          You need {neededCoins - currentCoins} AngelSEED (ANGEL) coins to level up
+          You need {(neededCoins - currentCoins).toFixed(2)} AngelSEED (ANGEL) coins to level up
         </p>
       </div>
 

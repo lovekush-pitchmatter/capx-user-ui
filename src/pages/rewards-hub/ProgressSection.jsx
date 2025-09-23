@@ -22,7 +22,7 @@ const ProgressSection = ({ hubData, leaderBoard }) => {
             <img src={dailyEarned} alt="Daily Earned" className="w-15 h-15" />
           </div>
           <p className="text-gray-600 font-semibold mt-2">Total Earned (Lifetime)</p>
-          <h3 className="text-2xl font-bold">{hubData?.data?.totalAngelSeedTokens || 0}</h3>
+          <h3 className="text-2xl font-bold">{(hubData?.data?.totalAngelSeedTokens || 0).toFixed(2)}</h3>
           <span className="text-sm text-gray-500">ANGEL</span>
         </div>
 
@@ -33,7 +33,7 @@ const ProgressSection = ({ hubData, leaderBoard }) => {
           </div>
           <p className="text-gray-600 mt-2 font-semibold">This Week</p>
           <h3 className="text-2xl font-bold">{hubData?.data?.totalThisWeek?.totalCount || 0} tasks</h3>
-          <span className="text-sm text-gray-500">+{hubData?.data?.totalThisWeek?.totalTokenAmount || 0} ANGEL</span>
+          <span className="text-sm text-gray-500">+{(hubData?.data?.totalThisWeek?.totalTokenAmount || 0).toFixed(2)} ANGEL</span>
         </div>
 
         {/* Top Achievers */}

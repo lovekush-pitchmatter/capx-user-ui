@@ -7,14 +7,14 @@ import bnbLogo from '../../assets/crypto/bnb.png';
 
 const cryptoOptions = [
   {
+    id: 'usdt',
+    name: 'USDT.ETH',
+    logo: usdtLogo
+  },
+  {
     id: 'eth',
     name: 'Ethereum',
     logo: ethLogo
-  },
-  {
-    id: 'usdt',
-    name: 'USDT.BSC',
-    logo: usdtLogo
   },
   {
     id: 'bnb',

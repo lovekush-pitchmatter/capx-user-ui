@@ -27,6 +27,9 @@
 }
 
 .dashboard-section-buy-capx{
+  z-index: 1!important;
+}
+.succes-dashboard{
   z-index: 100!important;
 }
 

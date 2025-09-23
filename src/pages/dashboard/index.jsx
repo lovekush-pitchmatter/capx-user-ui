@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboard, fetchActivity, fetchAngelLeaderBoard, fetchCapxLeaderBoard, fetchLoginActivity } from "../../store/slices/rewardsHubSlice";
 import { getUser } from "../../store/slices/authSlice";
@@ -11,6 +11,7 @@ import Layout from "../../components/layout/Layout";
 import Loader from "../loader"
 import { Link } from "react-router-dom";
 import AssetAllocation from "../../components/dashboard/AssetAllocation";
+import SuccessModal from "../../components/dashboard/SuccessModal";
 
 //new
 import BuyCapx from "../../components/dashboard/BuyCapx";
@@ -31,6 +32,8 @@ const Dashboard = () => {
   const loginActivity = useSelector((state) => state.rewards?.loginActivity);
   const angelLeaderBoard = useSelector((state) => state.rewards?.angelLeaderboard);
   const capxLeaderBoard = useSelector((state) => state.rewards?.capxLeaderboard);
+  const [showModal, setShowModal] = useState(false);
+  const [tokensToReceive, settokensToReceive] = useState("");
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -57,7 +60,18 @@ const Dashboard = () => {
   // console.log("user activity in dashboard 1:", user);
   // console.log("user activity in dashboard:", loginActivity);
 
-  return (
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleBuySuccess = (amount) => {
+    settokensToReceive(amount);
+    setShowModal(true);
+    // You can add additional logic here like refreshing dashboard data
+    // dispatch(fetchDashboard());
+  };
+
+  return ( 
     <Layout>      
       {/* Email update warning */}
       {user && !user.is_email_updated && (
@@ -99,7 +113,13 @@ const Dashboard = () => {
           
           {userDashboard && userDashboard.presalePrices && (
             <>
-              <BuyCapx presaleData={userDashboard.presalePrices} currentPresaleStage={userDashboard.currentPresaleStage}/>
+              <BuyCapx 
+                onSuccess={handleBuySuccess} 
+                presaleData={userDashboard.presalePrices} 
+                currentPresaleStage={userDashboard.currentPresaleStage} 
+                cryptoPrices={userDashboard.cryptoPrice} 
+                userWallet={user?.userWallet}
+              />
               <CalculateProfit presalePriceData={userDashboard.presalePrices} />
             </>
           )}
@@ -142,6 +162,13 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+            {showModal && (
+              <SuccessModal
+                token={tokensToReceive}
+                onClose={handleCloseModal}
+              />
+            )}
     </Layout>
   );
 };

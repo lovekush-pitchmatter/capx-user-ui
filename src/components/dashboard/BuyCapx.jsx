@@ -2,23 +2,30 @@ import React, { useState, useEffect } from "react";
 import capxBuy from "../../assets/buy-capx.png";
 import capxCoin from "../../assets/crypto/capx.png";
 import CryptoDropdown from "../common/CryptoDropdown";
- 
-const BuyCapx = ({ presaleData, currentPresaleStage }) => {
+import { buyCapx } from "../../store/slices/transactionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import encryptData from "../../utils/encryption/encryption";
+import hashing from "../../utils/encryption/hashing";
+import SuccessModal from "./SuccessModal";
+
+const BuyCapx = ({ presaleData, currentPresaleStage, cryptoPrices, userWallet, onSuccess }) => {
   // console.log("presale stage and data", presaleData, currentPresaleStage)
   const [payAmount, setPayAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("0");
-  const [selectedCrypto, setSelectedCrypto] = useState("eth");
+  const [selectedCrypto, setSelectedCrypto] = useState("usdt");
   const [usdtEquivalent, setUsdtEquivalent] = useState("0.00");
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [tokensToReceive, settokensToReceive] = useState("");
+  const dispatch = useDispatch();
   
-  // Mock crypto prices - in a real app, you would fetch these from an API
-  const cryptoPrices = {
-    eth: 4500, // 1 ETH = $4500 USD
-    bnb: 1032,  // 1 BNB = $580 USD
-    usdt: 1     // 1 USDT = $1 USD
+  const cryptoPriceMap = {
+    eth: cryptoPrices?.find(crypto => crypto.crypto_name === "eth")?.current_price || 4500,
+    bnb: cryptoPrices?.find(crypto => crypto.crypto_name === "bnb")?.current_price || 1032,
+    usdt: 1
   };
   
   // Find current stage object
@@ -43,7 +50,7 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
       return;
     }
     const inputValue = parseFloat(payAmount);
-    const usdValue = inputValue * cryptoPrices[selectedCrypto];
+    const usdValue = inputValue * cryptoPriceMap[selectedCrypto];
     const tokenPrice = getTokenPrice(usdValue);
     const capxTokens = tokenPrice > 0 ? usdValue / tokenPrice : 0;
     setUsdtEquivalent(usdValue.toFixed(2));
@@ -57,7 +64,7 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
     // Recalculate values based on new crypto
     if (payAmount) {
       const inputValue = parseFloat(payAmount);
-      const usdValue = inputValue * cryptoPrices[cryptoId];
+      const usdValue = inputValue * cryptoPriceMap[cryptoId];
       const tokenPrice = getTokenPrice(usdValue);
       const capxTokens = tokenPrice > 0 ? usdValue / tokenPrice : 0;
       
@@ -76,29 +83,48 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
   };
 
   // Handle buy button click with loading and error toast
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     setIsLoading(true);
-    
-    // Simulate API call with 2 second delay
-    setTimeout(() => {
+
+    const data = {
+      amount: payAmount,
+      coin: selectedCrypto,
+    }
+
+    const { encryptedData, id } = encryptData(data);
+    const { reqdata } = hashing(data, id);
+    const finalData = { data: encryptedData, reqid: id, reqdata };
+
+    const result = await dispatch(buyCapx(finalData));
+    if (result?.payload?.status === "ok") {
       setIsLoading(false);
+      setShowModal(true);
+      settokensToReceive(receiveAmount);
       
-      // Show error toast for insufficient funds
+      // Call the callback with the amount
+      if (typeof onSuccess === 'function') {
+        onSuccess(receiveAmount);
+      }
+    } else {
       const cryptoName = selectedCrypto.toUpperCase();
       setToastMessage(`You do not have enough ${cryptoName}`);
       setShowToast(true);
-      
+      setIsLoading(false);
       // Hide toast after 5 seconds
       setTimeout(() => {
         setShowToast(false);
-      }, 5000);
-    }, 2000);
+      }, 5000); 
+
+    }
+    
   };
   
   //here the prices changes based on stage settings
   //if amount enter is less than 5k than the amount_min of stage price is applied
   //if amount enter is more than 5k than the amount_max of stage price is applied -> with discount
   //get current stage number
+
+
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 w-full h-full dashboard-section-buy-capx relative">
@@ -114,7 +140,8 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
             </button>
           </div>
         </div>
-      )}
+      )} 
+
 
       <h3 className="text-xl font-semibold text-gray-800 mb-6">Buy CAPX</h3>
       
@@ -138,7 +165,7 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
                 <div className="text-sm text-gray-500 mt-1">≈ ${usdtEquivalent}</div>
               </div>
               
-              <div className="ml-4">
+              <div className="ml-4 mt-10" style={{ marginTop: 10}}>
                 <div className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-[120px]">
                   {/* Dropdown for crypto with logo and tracking selected value */}
                   <CryptoDropdown 
@@ -147,7 +174,7 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
                   />
                 </div>
                 <div className="text-xs text-gray-500 text-right mt-1">
-                  Balance: 0.00000 {selectedCrypto.toUpperCase()} Max
+                  Available Wallet Balance: {selectedCrypto === "usdt" ? userWallet?.usdAmount : "0.0000"} {selectedCrypto.toUpperCase()}
                 </div>
               </div>
             </div>
@@ -219,7 +246,8 @@ const BuyCapx = ({ presaleData, currentPresaleStage }) => {
             "Buy CAPX"
           )}
         </button>
-      </div>
+      </div> 
+
     </div>
   );
 };

@@ -87,6 +87,13 @@ const transactionApi = {
     });
     return res.data;
   },
+  buyCapx: async (encryptedData: any) => {
+    const token = localStorage.getItem("token");
+    const res = await axiosInstance.post("/buy/capx", { encryptedData }, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    return res.data;
+  },
   manualPayment: async (encryptedData: any) => {
     const token = localStorage.getItem("token");
     const res = await axiosInstance.post("/order/create/manual/deposit", { encryptedData }, {

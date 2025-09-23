@@ -3,7 +3,6 @@ import capxCoin from "../../assets/crypto/capx.png";
 
 const CalculateProfit = ({ presalePriceData = [] }) => {
 
-  console.log("hello data", presalePriceData)
   // Create a default stage 1 object for when no data is available
   const defaultStage = { 
     _id: 'default',

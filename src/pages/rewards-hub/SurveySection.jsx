@@ -2,12 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import quiz from "../../assets/images/quiz-r.png";
 import encryptData from "../../utils/encryption/encryption";
 import hashing from "../../utils/encryption/hashing";
-import { submitSurvey } from "../../store/slices/rewardsHubSlice";
+import { submitSurvey, submitQuizAnswer } from "../../store/slices/rewardsHubSlice";
 import { useDispatch } from "react-redux";
 import Lottie from "react-lottie";
 import celebrationAnimation from "../../assets/celebration.json";
+import { is } from "date-fns/locale";
 
-const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
+const SurveySection = ({ quizQuestions, surveys, onSurveyComplete, onQuizComplete }) => {
+
+  console.log("hello 1", quizQuestions)
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState("");
   const [quizModalOpen, setQuizModalOpen] = useState(false);
@@ -34,12 +37,16 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
   const [nextLoading, setNextLoading] = useState(false);
   const [quizSubmitLoading, setQuizSubmitLoading] = useState(false);
   const [quizParticipateLoading, setQuizParticipateLoading] = useState(false);
+  const [congratsQuizModalOpen, setCongratsQuizModalOpen] = useState(false);
+  const [ifcorrect, setIfCorrect] = useState(false);
+  const [skipped, setSkipped] = useState(false);
 
   // Add error state for survey
   const [surveyError, setSurveyError] = useState("");
 
   // Check if quiz and survey are available
   const isQuizAvailable = quizQuestions?.quiz_available === 1;
+  const isQuizAnswered = quizQuestions?.is_quiz_answered === 1;
   const isSurveyAvailable = surveys?.survey_available === 1;
   //  console.log("isQuizAvailable:", isQuizAvailable);
   // console.log("isSurveyAvailable:", isSurveyAvailable);
@@ -100,40 +107,62 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
     const options = quizQuestions?.options || [];
     const randomIndex = Math.floor(Math.random() * options.length);
     const randomAnswer = options[randomIndex];
-
     setQuizSubmitLoading(true);
-    submitQuizAnswer(randomAnswer);
-    // Loading state will be reset in the submitQuizAnswer function
+    setSkipped(true);
+    submitQuizAnswers(randomAnswer, false);
   };
 
   const handleQuizSubmit = () => {
     setQuizSubmitLoading(true);
-    submitQuizAnswer(selectedOption);
+    submitQuizAnswers(selectedOption, true);
   };
 
-  const submitQuizAnswer = (answer) => {
+  const submitQuizAnswers = async (answer, isUserInitiated) => {
     // Encrypt quiz data before sending
-    const encryptedData = btoa(JSON.stringify({
-      quizid: quizQuestions?.quiz_id,
-      quiz_answer: answer
-    }));
 
-    // console.log("Submitting encrypted quiz data:", encryptedData);
+      const surveyData = {
+        quizid: quizQuestions?.quiz?._id,
+        quiz_answer: answer,
+        is_user_initiated: isUserInitiated ? true : false
+      };
 
-    // Simulate API call with a timeout
-    setTimeout(() => {
-      // Show success message if answer is correct
-      if (answer === quizQuestions?.correct_option) {
-        setCorrectAnswer(true);
-        setCongratsModalOpen(true);
-        setTimeout(() => setCongratsModalOpen(false), 4000);
-      } else {
-        setCorrectAnswer(false);
+      const { encryptedData, id } = encryptData(surveyData);
+      const { reqdata } = hashing(surveyData, id);
+      const payload = {
+        data: encryptedData,
+        reqid: id,
+        reqdata: reqdata
+      };
+
+      const result = await dispatch(submitQuizAnswer(payload));
+      if (result?.payload?.status === "ok") {
+
+        setQuizSubmitLoading(false);
+        setQuizModalOpen(false);
+        if(result?.payload?.correct){
+
+          onQuizComplete();
+          setCongratsQuizModalOpen(true);
+          setIfCorrect(true);
+          setShowConfetti(true);
+
+        }else{
+
+          onQuizComplete();
+          setCongratsQuizModalOpen(true);
+          setIfCorrect(false);
+
+        }
+
+      }else{
+
+        onQuizComplete();
+        setQuizSubmitLoading(false);
+        setQuizModalOpen(false);
+
       }
 
-      setQuizSubmitLoading(false);
-      setQuizModalOpen(false);
-    }, 1000); // 1 second delay to simulate API call
+
   };
 
   const handleCloseQuizModal = () => {
@@ -238,16 +267,17 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
       // console.log("survey submission result:", result);
       // Refresh poll data
       if (result?.payload?.status === "ok") {
+
         setDisableButton(true);
         setNextLoading(false);
         setSkipLoading(false);
         setShowConfetti(true);
         setCongratsModalOpen(true);
-
         // Call parent callback to refetch survey data
         if (typeof onSurveyComplete === "function") {
           onSurveyComplete();
         }
+
       } else {
         setNextLoading(false);
         setSkipLoading(false);
@@ -412,7 +442,7 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
                 }
               >
                 {surveys?.already_answered == 1
-                  ? "Survey Already Answered"
+                  ? "Survey already answered"
                   : nextLoading
                     ? (
                       <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -438,7 +468,7 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
           <p className="text-lg text-gray-800 mb-4">
             Test your knowledge. Earn ANGEL.
           </p>
-          {isQuizAvailable ? (
+          {isQuizAvailable && !isQuizAnswered ? (
             <button
               className="w-full bg-gradient-to-r from-[#B500EF] to-[#37009A] text-white py-2 rounded-lg font-medium hover:opacity-90 transition flex justify-center items-center"
               onClick={() => {
@@ -465,9 +495,8 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
                 className="w-full bg-gray-400 text-white py-2 rounded-lg font-medium transition"
                 disabled
               >
-                Participate Now
+                Quiz already answered
               </button>
-              <p className="text-sm text-yellow-600 mt-2">No quiz available at the moment</p>
             </div>
           )}
         </div>
@@ -499,10 +528,10 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
               </div>
               <hr className="my-2 border-gray-200" />
               <h3 className="text-base font-medium mb-3 mt-2 text-[#23234F]">
-                {quizQuestions?.question_text || "What does a blockchain store?"}
+                {quizQuestions?.quiz?.question_text}
               </h3>
               <div className="space-y-2 mb-6">
-                {(quizQuestions?.options || ["Learning", "Rewards", "Networking", "Prefer not to say"]).map((option) => (
+                {(quizQuestions?.quiz?.options).map((option) => (
                   <label
                     key={option}
                     className="flex items-center space-x-2 cursor-pointer"
@@ -526,7 +555,7 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
                 onClick={handleCloseQuizModal}
                 disabled={quizSubmitLoading}
               >
-                Skip
+                Close
               </button>
               <button
                 className={`flex-1 py-2 rounded-lg font-medium transition flex justify-center items-center ${
@@ -661,13 +690,137 @@ const SurveySection = ({ quizQuestions, surveys, onSurveyComplete }) => {
       )}
 
 
+      {congratsQuizModalOpen && (
+         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[1000] p-4">
+          <div className="bg-white rounded-[32px] shadow-2xl max-w-[360px] w-full p-0 relative flex flex-col items-center overflow-hidden">
+            {/* Top section with icon */}
+            <div className="w-full flex flex-col items-center justify-center bg-[#F6F7FB] pt-10 pb-8 rounded-t-[32px]">
+              {/* Placeholder for icon */}
+              <div className="w-20 h-20 flex items-center justify-center mb-2">
+                {/* Replace below SVG with your logo if needed */}
+                {ifcorrect ? (                
+                  <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+                  <title id="title">Winning Cup</title>
+                  <desc id="desc">A light trophy cup with gradient fill and subtle shine</desc>
+
+                  <defs>
+                    <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#fff7d6" />
+                      <stop offset="45%" stop-color="#ffef99" />
+                      <stop offset="100%" stop-color="#ffd24a" />
+                    </linearGradient>
+
+                    <linearGradient id="g2" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7" />
+                      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                    </linearGradient>
+
+                    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.12" />
+                    </filter>
+                  </defs>
+
+                 
+                  <ellipse cx="120" cy="200" rx="56" ry="10" fill="#000" opacity="0.08" />
+
+              
+                  <g transform="translate(0,12)">
+                    <rect x="80" y="150" width="80" height="18" rx="3" fill="#2b2b2b" opacity="0.9" filter="url(#shadow)" />
+                    <rect x="96" y="132" width="48" height="22" rx="3" fill="url(#g1)" />
+                  </g>
+
+                
+                  <g transform="translate(0,-6)">
+                    <path d="M70 38
+             C70 24, 86 16, 120 16
+             C154 16, 170 24, 170 38
+             L170 92
+             C170 116, 142 128, 120 128
+             C98 128, 70 116, 70 92
+             Z"
+                      fill="url(#g1)" stroke="#e5b43b" stroke-width="2" />
+
+                  
+                    <path d="M78 48 C78 36, 92 30, 120 30 C148 30, 162 36, 162 48" fill="none" stroke="#e0ad2f" stroke-width="3" opacity="0.25" />
+
+                  
+                    <path d="M66 54
+             C52 48, 52 78, 66 84"
+                      fill="none" stroke="url(#g1)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+
+                  
+                    <path d="M174 54
+             C188 48, 188 78, 174 84"
+                      fill="none" stroke="url(#g1)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+
+               
+                    <path d="M110 30
+             C118 28, 130 36, 128 56
+             C126 76, 112 92, 104 92"
+                      fill="none" stroke="url(#g2)" stroke-width="18" stroke-linecap="round" opacity="0.6" />
+
+
+                    <path d="M70 38
+             C70 24, 86 16, 120 16
+             C154 16, 170 24, 170 38
+             L170 92
+             C170 116, 142 128, 120 128
+             C98 128, 70 116, 70 92
+             Z"
+                      fill="none" stroke="#c6861f" stroke-width="1" opacity="0.8" />
+                  </g>
+
+                  <rect x="86" y="138" width="24" height="6" rx="2" fill="#fff" opacity="0.14" />
+                  <rect x="130" y="138" width="24" height="6" rx="2" fill="#fff" opacity="0.08" />
+                </svg>) : (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <circle cx="24" cy="24" r="24" fill="#FFD6D6"/>
+  <line x1="16" y1="16" x2="32" y2="32" stroke="red" stroke-width="3" stroke-linecap="round"/>
+  <line x1="32" y1="16" x2="16" y2="32" stroke="red" stroke-width="3" stroke-linecap="round"/>
+</svg>
+)}
+              </div>
+              {ifcorrect && showConfetti && (
+                <div className="absolute inset-0 flex items-center justify-center z-[1000] pointer-events-none">
+                  <Lottie options={confettiOptions} height={300} width={300} />
+                </div>
+              )}
+            </div>
+            {/* Bottom section with result */}
+            {ifcorrect ? <div className="w-full flex flex-col items-center justify-center px-6 pb-8 pt-2">
+              <h2 className="text-2xl font-bold text-center mb-2 text-[#23234F]">Quiz answered Correctly!</h2>
+              <p className="text-base text-gray-700 mb-6 text-center">
+                You earned <span className="font-bold text-[#7A44FF]">+{Number(10).toFixed(2)} ANGEL</span>
+              </p>
+              <button
+                className="w-full py-3 rounded-2xl font-semibold text-white text-lg shadow-lg"
+                style={{ background: 'linear-gradient(90deg, #37009A 0%, #7A44FF 50%, #B500EF 100%)' }}
+                onClick={() => setCongratsQuizModalOpen(false)}
+              >
+                Done
+              </button>
+            </div> : <div className="w-full flex flex-col items-center justify-center px-6 pb-8 pt-2">
+              <h2 className="text-2xl font-bold text-center mb-2 text-[#23234F]">{skipped ? "Oops!! You skipped the quiz." : "Oops!! You answered incorrectly."}</h2>
+              <p className="text-base text-gray-700 mb-6 text-center">
+                <span className="font-bold text-[#7A44FF]">Better luck next time.</span>
+              </p>
+              <button
+                className="w-full py-3 rounded-2xl font-semibold text-white text-lg shadow-lg"
+                style={{ background: 'linear-gradient(90deg, #37009A 0%, #7A44FF 50%, #B500EF 100%)' }}
+                onClick={() => setCongratsQuizModalOpen(false)}
+              >
+                Done
+              </button>
+            </div>}
+          </div>
+        </div>
+      )}
 
       {/* Confirm Modal */}
       {confirmModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-lg font-bold mb-4">Confirm Action</h2>
-            <p className="text-gray-600 mb-6">Are you sure you want to close the quiz?</p>
+            <p className="text-gray-600 mb-6">Are you sure you want to close the quiz? You will not be credited ANGEL for this.</p>
             <div className="flex justify-end space-x-4">
               <button
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"

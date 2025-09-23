@@ -10,11 +10,16 @@ const StatsCards = ({ dashboard = {} }) => {
     return isNaN(num) ? "$0.00" : `$${num.toFixed(4)}`;
   };
 
+  const formatAngelCurrency = (val) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? "0.00" : `${num.toFixed(2)}`;
+  };
+
   const statsData = [
     {
       id: 1,
       title: "CURRENT ANGEL BALANCE",
-      value: dashboard?.currentAngelTokens || "0",
+      value: formatAngelCurrency(dashboard?.currentAngelTokens) || "0.00",
       bgColor: "bg-red-100",
       icon: AngelBal
     },

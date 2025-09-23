@@ -24,16 +24,16 @@ const RankProgress = ({ hubData }) => {
             className="bg-gradient-to-r from-[#B500EF] to-[#37009A] h-4 md:h-6 rounded-full"
             style={{ width: `${rankPercentage}%` }}
           ></div>
-          <p className="absolute top-0.5 left-1 sm:left-2 md:left-10 text-[12px] text-white sm:text-xs md:text-sm hidden sm:block font-bold">{hubData?.data?.totalAngelSeedTokens}</p>
+          <p className="absolute top-0.5 left-1 sm:left-2 md:left-10 text-[12px] text-white sm:text-xs md:text-sm hidden sm:block font-bold">{(hubData?.data?.totalAngelSeedTokens).toFixed(2)}</p> <p className="absolute top-0.5 left-1 sm:left-2 md:left-10 text-[12px] text-white sm:text-xs md:text-sm block sm:hidden font-bold">{hubData?.data?.totalAngelSeedTokens}</p>
           <span
             className={`absolute inset-0 flex items-center justify-center text-[9px] sm:text-xs md:text-md font-medium text-center px-1 leading-tight ${
-              rankPercentage > 50 ? "text-white" : "text-[#000]"
+              rankPercentage > 50 ? "text-black" : "text-[#000]"
             }`}
           >
             <span className="hidden sm:inline">You need</span>
             <span className="text-purple-800 mx-1">
-              <span className={`hidden font-bold sm:inline ${rankPercentage > 50 ? "text-white" : "text-[#F5B027]"}`}>{hubData?.data?.coinsToLevelUp} AngelSEED (ANGEL)</span>
-              <span className={`sm:hidden ${rankPercentage > 50 ? "text-white" : "text-[#F5B027]"}`}>{hubData?.data?.coinsToLevelUp} ANGEL</span>
+              <span className={`hidden font-bold sm:inline ${rankPercentage > 50 ? "text-black" : "text-[#F5B027]"}`}>{(hubData?.data?.coinsToLevelUp).toFixed(2)} AngelSEED (ANGEL)</span>
+              <span className={`sm:hidden ${rankPercentage > 50 ? "text-black" : "text-[#F5B027]"}`}>{(hubData?.data?.coinsToLevelUp).toFixed(2)} ANGEL</span>
             </span>
             <span className="hidden sm:inline">coins to level up</span>
           </span>

@@ -232,7 +232,7 @@ export const transferAmount = createAsyncThunk(
     }
   }
 );
-
+ 
 //send transfer otp
 export const sendTransferOtpThunk = createAsyncThunk(
   'transaction/sendTransferOtp',
@@ -242,6 +242,17 @@ export const sendTransferOtpThunk = createAsyncThunk(
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const buyCapx = createAsyncThunk(
+  "rewardsHub/buyCapx",
+  async (encryptedData: any, { rejectWithValue }) => {
+    try {
+      return await transactionApi.buyCapx(encryptedData);
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Failed to submit survey");
     }
   }
 );
@@ -539,7 +550,17 @@ const transactionSlice = createSlice({
         state.error = action.payload as string;
       })
 
-
+      .addCase(buyCapx.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })  
+      .addCase(buyCapx.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(buyCapx.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       .addCase(sendTransferOtpThunk.pending, (state) => {
         state.sendTransferOtp.loading = true;
         state.sendTransferOtp.error = null;
