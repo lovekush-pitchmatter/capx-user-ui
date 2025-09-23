@@ -12,6 +12,7 @@ import Theme from "../theme/Theme";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slices/authSlice";
 import LogoutIcon from "../../assets/dashboard/logout.png";
+import Setting from "../../assets/Setting"
 
 const Header = ({ menu_one, menu_two}) => {
   const customLanguages = [
@@ -70,6 +71,20 @@ const Header = ({ menu_one, menu_two}) => {
     { code: "sw", label: "Kiswahili", country: "KE" },
   ];
 
+  // Notifications
+  const notificationsList = [
+    { id: 1, avatar: "https://i.pravatar.cc/40?img=1", name: "April Qoo", text: "liked your post", time: "30 minutes ago" },
+    { id: 2, avatar: "https://i.pravatar.cc/40?img=2", name: "April Qoo", text: "commented on your post", time: "2 hours ago" },
+    { id: 3, avatar: "https://i.pravatar.cc/40?img=3", name: "April Qoo", text: "requested to join your organisation", time: "14 hours ago" },
+    { id: 4, avatar: "https://i.pravatar.cc/40?img=3", name: "April Qoo", text: "requested to join your organisation", time: "14 hours ago" },
+    { id: 5, avatar: "https://i.pravatar.cc/40?img=3", name: "April Qoo", text: "requested to join your organisation", time: "14 hours ago" },
+  ];
+
+  const [notifications, setNotifications] = useState(3);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const notifRef = useRef(null);
+
+
   const [selectedLang, setSelectedLang] = useState(customLanguages[0]);
   const [searchValue, setSearchValue] = useState("");
   const [dropdownSearch, setDropdownSearch] = useState("");
@@ -124,6 +139,9 @@ const Header = ({ menu_one, menu_two}) => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setIsNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -184,8 +202,60 @@ const Header = ({ menu_one, menu_two}) => {
           
           <div className="flex">
             <Theme />
-            <div className="hidden sm:flex flex">
-              {/* <Link to="#" style={{ cursor: "pointer" }}><img src={bell} alt="Bell" className="w-10 h-10" /></Link> */}
+            <div className="sm:flex flex">
+              {/* Notifications */}
+              <div className="relative" ref={notifRef}>
+                <button
+                  onClick={() => setIsNotifOpen(!isNotifOpen)}
+                  className="relative focus:outline-none"
+                >
+                  <img src={bell} alt="Bell" className="w-10 h-10" />
+                  {notifications > 0 && (
+                    <span className="absolute top-3 right-3 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                      {notifications}
+                    </span>
+                  )}
+                </button>
+
+                {isNotifOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border">
+                    <div className="p-3 font-semibold text-white border-b bg-blue-600 rounded-t-lg flex justify-between">
+                      Notifications
+                      <Setting color="white" />
+                    </div>
+                    <ul className="max-h-60 overflow-hidden">
+                      {notificationsList.map((notif) => (
+                        <li
+                          key={notif.id}
+                          className="flex items-start gap-3 p-3 hover:bg-gray-50 cursor-pointer"
+                        >
+                          <img
+                            src={notif.avatar}
+                            alt="avatar"
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <p className="text-sm">
+                              <span className="font-bold">{notif.name}</span>{" "}
+                              {notif.text}
+                            </p>
+                            <span className="text-xs text-gray-400">{notif.time}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="p-2 border-t text-center hover:bg-gray-100 cursor-pointer">
+                      <Link to="/notifications">
+                        <span className="text-sm font-semibold text-blue-600">
+                          See All
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Mail & Gift */}
               <Link onClick={() => openTidioChat()} style={{ cursor: "pointer" }}><img src={mail} alt="Mail" className="w-10 h-10" /></Link>
               <Link to="/angelseed/reward" style={{ cursor: "pointer" }}><img src={gift} alt="Gift" className="w-10 h-10" /></Link>
             </div>
